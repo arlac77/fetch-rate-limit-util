@@ -8,12 +8,6 @@ jobs:
         - cat ./build/coverage/lcov.info | npx coveralls
       node_js:
         - 14.9.0
-        - '-10'
-        - '-11'
-        - '-12'
-        - '-13'
-        - '-14'
-        - '-15'
     - stage: doc
       node_js: lts/*
       skip_cleanup: 'true'
@@ -25,7 +19,6 @@ jobs:
       script: skip
       deploy:
         provider: script
-        skip_cleanup: '--delete--'
         cleanup: 'false'
         script:
           - npx semantic-release

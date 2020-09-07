@@ -19,14 +19,14 @@
   ],
   "license": "BSD-2-Clause",
   "scripts": {
-    "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 2m && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
     "test": "ava --timeout 2m",
-    "docs": "documentation readme {{main}} --section=API",
-    "lint": "documentation lint {{main}}"
+    "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 2m && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
+    "docs": "documentation readme ./src/rate-limit-util.mjs --section=API",
+    "lint": "documentation lint ./src/rate-limit-util.mjs"
   },
   "devDependencies": {
-    "c8": "^7.3.0",
     "ava": "^3.12.1",
+    "c8": "^7.3.0",
     "documentation": "^13.0.2",
     "semantic-release": "^17.1.1"
   },
