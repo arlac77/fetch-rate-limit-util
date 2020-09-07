@@ -2,12 +2,15 @@ import test from "ava";
 
 import { rateLimitHandler } from "fetch-rate-limit-util";
 
-function rlt(t, headers, expected) {
-  const h = { get: name => (name === "link" ? header : null) };
-  t.is(getHeaderLink(headers, rel), expected);
+async function rlt(t, headers, status=403, expected) {
+  const response = { status, headers: { get: name => headers[name] };
+  let msecs = -1;
+
+  await rateLimitHandler(async () => response, (x) => { msecs = x });
+  t.is(msecs,expected); 
 }
 
-rlt.title = (providedTitle, headers, expected) =>
-  `rate limit ${header} ${rel}`.trim();
+rlt.title = (providedTitle, headers, status=403, expected) =>
+  `rate limit ${headers}`.trim();
 
-test(rlt, `<http://somewhere>; rel="abc"`, undefined);
+test(rlt, { "x-ratelimit-remaining" : 100 }, 0.1);
