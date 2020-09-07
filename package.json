@@ -1,3 +1,46 @@
 {
-  "name": "fetch-rate-limit-util"
+  "name": "fetch-rate-limit-util",
+  "version": "0.0.0-semantic-release",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": "{{main}}"
+  },
+  "description": "handle fetch rate limits",
+  "contributors": [
+    {
+      "name": "Markus Felten",
+      "email": "markus.felten@gmx.de"
+    }
+  ],
+  "license": "BSD-2-Clause",
+  "scripts": {
+    "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 2m && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
+    "test": "ava --timeout 2m",
+    "docs": "documentation readme {{main}} --section=API",
+    "lint": "documentation lint {{main}}"
+  },
+  "devDependencies": {
+    "c8": "^7.3.0",
+    "ava": "^3.12.1",
+    "documentation": "^13.0.2",
+    "semantic-release": "^17.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arlac77/fetch-rate-limit-util.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arlac77/fetch-rate-limit-util/issues"
+  },
+  "homepage": "https://github.com/arlac77/fetch-rate-limit-util#readme",
+  "template": {
+    "inheritFrom": [
+      "arlac77/template-arlac77-github",
+      "arlac77/template-esm-only"
+    ]
+  }
 }
