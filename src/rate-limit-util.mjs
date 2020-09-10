@@ -1,7 +1,10 @@
-export async function rateLimitHandler(fetcher,queryWait = (msecs,nthTry) => nthTry < 5 ? msecs : -1) {
+export async function rateLimitHandler(
+  fetcher,
+  queryWait = (msecs, nthTry) => (nthTry < 5 ? msecs + 10000: -1)
+) {
   let response;
 
-  for (let i = 0;; i++) {
+  for (let i = 0; ; i++) {
     response = await fetcher();
 
     switch (response.status) {
@@ -30,7 +33,9 @@ export async function rateLimitHandler(fetcher,queryWait = (msecs,nthTry) => nth
         );
 
         millisecondsToWait = queryWait(millisecondsToWait, i, response);
-        if(millisecondsToWait <= 0) { return response; }
+        if (millisecondsToWait <= 0) {
+          return response;
+        }
         console.log(`wait ${millisecondsToWait / 1000} (${response.url}) ...`);
         await new Promise(resolve => setTimeout(resolve, millisecondsToWait));
     }
