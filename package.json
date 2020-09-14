@@ -11,6 +11,7 @@
     ".": "./src/rate-limit-util.mjs"
   },
   "description": "handle fetch rate limits",
+  "keywords" : ["rate-limit"],
   "contributors": [
     {
       "name": "Markus Felten",

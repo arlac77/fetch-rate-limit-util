@@ -15,6 +15,10 @@
 handle fetch rate limits
 
 
+- [auth0](https://auth0.com/docs/policies/rate-limit-policy)
+- [github API](https://developer.github.com/v3/#rate-limiting)
+- [Zalando API](https://opensource.zalando.com/restful-api-guidelines/#153)
+
 ```js
 import {} from "fetch-rate-limit-util";
 

@@ -24,8 +24,10 @@ export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
         return response;
 
       case 403:
+      case 429:
         // https://auth0.com/docs/policies/rate-limit-policy
         // https://developer.github.com/v3/#rate-limiting
+        // https://opensource.zalando.com/restful-api-guidelines/#153
 
         const rateLimitRemaining = parseInt(
           response.headers.get("x-ratelimit-remaining")

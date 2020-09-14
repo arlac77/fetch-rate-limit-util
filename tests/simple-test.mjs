@@ -35,3 +35,12 @@ test(
   403,
   1000
 );
+
+test(
+  rlt,
+  {
+    "x-ratelimit-reset": Date.now() / 1000 + 1
+  },
+  429,
+  1000
+);
