@@ -4,9 +4,10 @@
  * @param {Integer} millisecondsToWait 
  * @param {Integer} rateLimitRemaining 
  * @param {Integer} nthTry
+ * @param {Object} response
  * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
  */
-function defaultQueryWait(millisecondsToWait, rateLimitRemaining, nthTry) {
+function defaultQueryWait(millisecondsToWait, rateLimitRemaining, nthTry, response) {
   if (nthTry > 5) return -1;
 
   return millisecondsToWait + 10000;
