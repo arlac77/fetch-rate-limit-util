@@ -9,3 +9,30 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![Known Vulnerabilities](https://snyk.io/test/github/arlac77/fetch-rate-limit-util/badge.svg)](https://snyk.io/test/github/arlac77/fetch-rate-limit-util)
 [![Coverage Status](https://coveralls.io/repos/arlac77/fetch-rate-limit-util/badge.svg)](https://coveralls.io/r/arlac77/fetch-rate-limit-util)
+
+# fetch-rate-limit-util
+
+handle fetch rate limits
+
+
+```js
+import {} from "fetch-rate-limit-util";
+
+const response = rateLimitHandler( () => fetch(someURL));
+
+```
+
+# API
+
+
+# install
+
+With [npm](http://npmjs.org) do:
+
+```shell
+npm install fetch-rate-limit-util
+```
+
+# license
+
+BSD-2-Clause

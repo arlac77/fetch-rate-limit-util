@@ -12,12 +12,15 @@ async function rlt(t, headers, status = 403, expected) {
 
   await rateLimitHandler(
     async () => response,
-    x => {
-      msecs = x;
+    (millisecondsToWait, rateLimitRemaining, nthTry) => {
+      console.log(millisecondsToWait, rateLimitRemaining, nthTry);
+      msecs = millisecondsToWait;
+
+      response.status = 200;
       return msecs;
     }
   );
-  t.is(msecs, expected);
+  t.true(msecs > 0 && msecs <= expected);
 }
 
 rlt.title = (providedTitle, headers, status = 403, expected) =>
@@ -27,7 +30,7 @@ test(
   rlt,
   {
     "x-ratelimit-remaining": 100,
-    "x-ratelimit-reset": Date.now() + 1000
+    "x-ratelimit-reset": Date.now() / 1000 + 1
   },
   403,
   1000
