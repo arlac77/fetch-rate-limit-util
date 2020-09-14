@@ -13,6 +13,11 @@ function defaultQueryWait(millisecondsToWait, rateLimitRemaining, nthTry, respon
   return millisecondsToWait + 10000;
 }
 
+/**
+ * Waits and retries after rate limit rest time has reached
+ * @param fetcher executes the fetch operation
+ * @param queryWait 
+ */
 export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
   let response;
 

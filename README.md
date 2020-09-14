@@ -12,15 +12,16 @@
 
 # fetch-rate-limit-util
 
-handle fetch rate limits
+Handle fetch rate limits.
+Waits and retries after rate limit rest time has reached
 
 
-- [auth0](https://auth0.com/docs/policies/rate-limit-policy)
+- [auth0 API](https://auth0.com/docs/policies/rate-limit-policy)
 - [github API](https://developer.github.com/v3/#rate-limiting)
 - [Zalando API](https://opensource.zalando.com/restful-api-guidelines/#153)
 
 ```js
-import {} from "fetch-rate-limit-util";
+import { rateLimitHandler } from "fetch-rate-limit-util";
 
 const response = rateLimitHandler( () => fetch(someURL));
 
