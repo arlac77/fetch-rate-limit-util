@@ -8,7 +8,7 @@ async function rlt(t, headers, status = 403, expected) {
     status,
     headers: { get: name => headers[name] }
   };
-  let msecs = -1;
+  let msecs;
 
   await rateLimitHandler(
     async () => response,
@@ -20,11 +20,13 @@ async function rlt(t, headers, status = 403, expected) {
       return msecs;
     }
   );
-  t.true(msecs > 0 && msecs <= expected);
+  t.true(msecs === undefined || (msecs > 0 && msecs <= expected));
 }
 
 rlt.title = (providedTitle, headers, status = 403, expected) =>
   `rate limit ${JSON.stringify(headers)} ${status}`.trim();
+
+test(rlt, {}, 200, -1);
 
 test(
   rlt,
