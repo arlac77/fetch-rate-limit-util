@@ -1,9 +1,9 @@
 
 /**
  * 
- * @param {Integer} millisecondsToWait 
- * @param {Integer} rateLimitRemaining 
- * @param {Integer} nthTry
+ * @param {Integer} millisecondsToWait
+ * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
+ * @param {Integer} nthTry how often have we retried the request already
  * @param {Object} response
  * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
  */
@@ -44,13 +44,6 @@ export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
 
         let millisecondsToWait =
           new Date(rateLimitReset * 1000).getTime() - Date.now();
-
-        /*console.log(
-          "x-ratelimit-remaining",
-          remainingRateLimit,
-          resetRateLimit,
-          millisecondsToWait / 1000
-        );*/
 
         millisecondsToWait = queryWait(millisecondsToWait, rateLimitRemaining, i, response);
         if (millisecondsToWait <= 0) {
