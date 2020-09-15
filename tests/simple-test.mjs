@@ -30,6 +30,7 @@ rlt.title = (providedTitle, headers, status = 403, expected) =>
 
 test(rlt, {}, 200, -1);
 test(rlt, {}, 403, 0);
+test(rlt, { "x-ratelimit-reset": "abc" }, 403, 0);
 test(rlt, {}, 429, 0);
 
 test(
