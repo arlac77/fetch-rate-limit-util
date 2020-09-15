@@ -17,7 +17,7 @@ async function rlt(t, headers, status = 403, expected) {
     (millisecondsToWait, rateLimitRemaining, nthTry) => {
       console.log(millisecondsToWait, rateLimitRemaining, nthTry);
 
-      t.true(millisecondsToWait > 0 && millisecondsToWait <= expected);
+      t.true(millisecondsToWait >= 0 && millisecondsToWait <= expected);
 
       response.status = 200;
       return millisecondsToWait;
@@ -29,6 +29,8 @@ rlt.title = (providedTitle, headers, status = 403, expected) =>
   `rate limit ${JSON.stringify(headers)} ${status}`.trim();
 
 test(rlt, {}, 200, -1);
+test(rlt, {}, 403, 0);
+test(rlt, {}, 429, 0);
 
 test(
   rlt,
