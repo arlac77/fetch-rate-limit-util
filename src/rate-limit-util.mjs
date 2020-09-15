@@ -1,10 +1,11 @@
 
 /**
  * 
+ * - only retry 5 times
  * @param {Integer} millisecondsToWait
  * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
  * @param {Integer} nthTry how often have we retried the request already
- * @param {Object} response
+ * @param {Object} response as returned from fetch
  * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
  */
 function defaultQueryWait(millisecondsToWait, rateLimitRemaining, nthTry, response) {

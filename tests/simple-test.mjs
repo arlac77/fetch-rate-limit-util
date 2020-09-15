@@ -4,23 +4,25 @@ import { rateLimitHandler } from "fetch-rate-limit-util";
 
 async function rlt(t, headers, status = 403, expected) {
   const response = {
-    url: "http://somewhere.com/",
     status,
     headers: { get: name => headers[name] }
   };
-  let msecs;
+
+  if (expected === -1) {
+    t.plan(0);
+  }
 
   await rateLimitHandler(
     async () => response,
     (millisecondsToWait, rateLimitRemaining, nthTry) => {
       console.log(millisecondsToWait, rateLimitRemaining, nthTry);
-      msecs = millisecondsToWait;
+
+      t.true(millisecondsToWait > 0 && millisecondsToWait <= expected);
 
       response.status = 200;
-      return msecs;
+      return millisecondsToWait;
     }
   );
-  t.true(msecs === undefined || (msecs > 0 && msecs <= expected));
 }
 
 rlt.title = (providedTitle, headers, status = 403, expected) =>
@@ -31,7 +33,6 @@ test(rlt, {}, 200, -1);
 test(
   rlt,
   {
-    "x-ratelimit-remaining": 100,
     "x-ratelimit-reset": Date.now() / 1000 + 1
   },
   403,
@@ -44,5 +45,14 @@ test(
     "x-ratelimit-reset": Date.now() / 1000 + 1
   },
   429,
+  1000
+);
+
+test.skip(
+  rlt,
+  {
+    "x-ratelimit-remaining": 10
+  },
+  403,
   1000
 );
