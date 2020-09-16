@@ -19,15 +19,16 @@ export function defaultQueryWait(
 }
 
 /**
- * Waits and retries after rate limit rest time has reached
+ * Waits and retries after rate limit rest time has reached.
+ * @see https://auth0.com/docs/policies/rate-limit-policy
+ * @see https://developer.github.com/v3/#rate-limiting
+ * @see https://opensource.zalando.com/restful-api-guidelines/#153
  * @param fetcher executes the fetch operation
  * @param queryWait
  */
 export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
-  let response;
-
   for (let i = 0; ; i++) {
-    response = await fetcher();
+    const response = await fetcher();
 
     switch (response.status) {
       default:
@@ -35,14 +36,6 @@ export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
 
       case 403:
       case 429:
-        // https://auth0.com/docs/policies/rate-limit-policy
-        // https://developer.github.com/v3/#rate-limiting
-        // https://opensource.zalando.com/restful-api-guidelines/#153
-
-        const rateLimitRemaining = parseInt(
-          response.headers.get("x-ratelimit-remaining")
-        );
-
         const rateLimitReset = parseInt(
           response.headers.get("x-ratelimit-reset")
         );
@@ -53,14 +46,13 @@ export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
 
         millisecondsToWait = queryWait(
           millisecondsToWait,
-          rateLimitRemaining,
+          parseInt(response.headers.get("x-ratelimit-remaining")),
           i,
           response
         );
         if (millisecondsToWait <= 0) {
           return response;
         }
-        //console.log(`wait ${millisecondsToWait / 1000} (${response.url}) ...`);
         await new Promise(resolve => setTimeout(resolve, millisecondsToWait));
     }
   }
