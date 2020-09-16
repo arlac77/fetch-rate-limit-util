@@ -1,21 +1,34 @@
+
+
 /**
- *
- * - only retry 5 times
+ * 
+ */
+export const MIN_WAIT_MSECS = 10000;
+
+/**
+ * max # of wait retires
+ */
+export const MAX_RETRIES = 5;
+
+/**
+ * Decide about the time to wait for a retry
+ * - only retry {@link MAX_RETRIES} times
+ * - when waiting wait at least {@link MIN_WAIT_MSECS}
  * @param {Integer} millisecondsToWait
  * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
  * @param {Integer} nthTry how often have we retried the request already
  * @param {Object} response as returned from fetch
  * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
  */
-export function defaultQueryWait(
+export function defaultWaitDecide(
   millisecondsToWait,
   rateLimitRemaining,
   nthTry,
   response
 ) {
-  if (nthTry > 5) return -1;
+  if (nthTry > MAX_RETRIES) return -1;
 
-  return millisecondsToWait + 10000;
+  return millisecondsToWait + MIN_WAIT_MSECS;
 }
 
 /**
@@ -24,9 +37,9 @@ export function defaultQueryWait(
  * @see https://developer.github.com/v3/#rate-limiting
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
  * @param fetcher executes the fetch operation
- * @param queryWait
+ * @param waitDecide
  */
-export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
+export async function rateLimitHandler(fetcher, waitDecide = defaultWaitDecide) {
   for (let i = 0; ; i++) {
     const response = await fetcher();
 
@@ -44,7 +57,7 @@ export async function rateLimitHandler(fetcher, queryWait = defaultQueryWait) {
           ? 0
           : new Date(rateLimitReset * 1000).getTime() - Date.now();
 
-        millisecondsToWait = queryWait(
+        millisecondsToWait = waitDecide(
           millisecondsToWait,
           parseInt(response.headers.get("x-ratelimit-remaining")),
           i,
