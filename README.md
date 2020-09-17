@@ -31,14 +31,29 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 ### Table of Contents
 
--   [defaultQueryWait](#defaultquerywait)
+-   [MIN_WAIT_MSECS](#min_wait_msecs)
+-   [MAX_RETRIES](#max_retries)
+-   [defaultWaitDecide](#defaultwaitdecide)
     -   [Parameters](#parameters)
 -   [rateLimitHandler](#ratelimithandler)
     -   [Parameters](#parameters-1)
 
-## defaultQueryWait
+## MIN_WAIT_MSECS
 
--   only retry 5 times
+Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
+
+## MAX_RETRIES
+
+max # of wait retires
+
+Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
+
+## defaultWaitDecide
+
+Decide about the time to wait for a retry
+
+-   only retry [MAX_RETRIES](#max_retries) times
+-   when waiting wait at least [MIN_WAIT_MSECS](#min_wait_msecs)
 
 ### Parameters
 
@@ -51,12 +66,19 @@ Returns **Integer** milliseconds to wait for next try or &lt; 0 to deliver curre
 
 ## rateLimitHandler
 
-Waits and retries after rate limit rest time has reached
+-   **See: <https://auth0.com/docs/policies/rate-limit-policy>
+    **
+-   **See: <https://developer.github.com/v3/#rate-limiting>
+    **
+-   **See: <https://opensource.zalando.com/restful-api-guidelines/#153>
+    **
+
+Waits and retries after rate limit rest time has reached.
 
 ### Parameters
 
 -   `fetcher`  executes the fetch operation
--   `queryWait`   (optional, default `defaultQueryWait`)
+-   `waitDecide`   (optional, default `defaultWaitDecide`)
 
 # install
 
