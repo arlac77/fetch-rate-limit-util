@@ -6,7 +6,7 @@ jobs:
         - npm run cover
         - cat ./build/coverage/lcov.info | npx coveralls
       node_js:
-        - 14.10.1
+        - 14.11.0
     - stage: doc
       node_js: lts/*
       skip_cleanup: 'true'
