@@ -9,7 +9,6 @@ jobs:
         - 14.11.0
     - stage: doc
       node_js: lts/*
-      skip_cleanup: 'true'
       script:
         - npm run lint
         - npm run docs
