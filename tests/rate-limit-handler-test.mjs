@@ -28,6 +28,7 @@ rlt.title = (providedTitle, headers, status = 403, expected) =>
   `rate limit ${JSON.stringify(headers)} ${status}`.trim();
 
 test(rlt, {}, 200, -1);
+test(rlt, {}, 500, -1);
 test(rlt, {}, 403, 0);
 test(rlt, { "x-ratelimit-reset": "abc" }, 403, 0);
 test(rlt, {}, 429, 0);
