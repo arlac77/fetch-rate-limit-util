@@ -65,9 +65,9 @@ Returns **Integer** milliseconds to wait for next try or < 0 to deliver current 
 
 ## rateLimitHandler
 
-*   **See**: https://auth0.com/docs/policies/rate-limit-policy
-*   **See**: https://developer.github.com/v3/#rate-limiting
-*   **See**: https://opensource.zalando.com/restful-api-guidelines/#153
+*   **See**: <https://auth0.com/docs/policies/rate-limit-policy>
+*   **See**: <https://developer.github.com/v3/#rate-limiting>
+*   **See**: <https://opensource.zalando.com/restful-api-guidelines/#153>
 
 Waits and retries after rate limit rest time has reached.
 
