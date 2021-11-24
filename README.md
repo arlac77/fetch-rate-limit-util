@@ -12,7 +12,7 @@
 # fetch-rate-limit-util
 
 Handle fetch rate limits.
-Waits and retries after rate limit rest time has reached
+Waits and retriy after rate limit rest time has reached
 
 *   [auth0 API](https://auth0.com/docs/policies/rate-limit-policy)
 *   [github API](https://developer.github.com/v3/#rate-limiting)
@@ -30,12 +30,17 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 ### Table of Contents
 
-*   [MIN_WAIT_MSECS](#min_wait_msecs)
-*   [MAX_RETRIES](#max_retries)
-*   [defaultWaitDecide](#defaultwaitdecide)
-    *   [Parameters](#parameters)
-*   [rateLimitHandler](#ratelimithandler)
-    *   [Parameters](#parameters-1)
+- [fetch-rate-limit-util](#fetch-rate-limit-util)
+- [API](#api)
+    - [Table of Contents](#table-of-contents)
+  - [MIN_WAIT_MSECS](#min_wait_msecs)
+  - [MAX_RETRIES](#max_retries)
+  - [defaultWaitDecide](#defaultwaitdecide)
+    - [Parameters](#parameters)
+  - [rateLimitHandler](#ratelimithandler)
+    - [Parameters](#parameters-1)
+- [install](#install)
+- [license](#license)
 
 ## MIN_WAIT_MSECS
 
