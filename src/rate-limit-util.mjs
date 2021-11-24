@@ -32,7 +32,7 @@ export function defaultWaitDecide(
 }
 
 /**
- * Waits and retries after rate limit rest time has reached.
+ * Waits and retries after rate limit reset time has reached.
  * @see https://auth0.com/docs/policies/rate-limit-policy
  * @see https://developer.github.com/v3/#rate-limiting
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
