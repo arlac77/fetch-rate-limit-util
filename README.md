@@ -30,17 +30,12 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 ### Table of Contents
 
-- [fetch-rate-limit-util](#fetch-rate-limit-util)
-- [API](#api)
-    - [Table of Contents](#table-of-contents)
-  - [MIN_WAIT_MSECS](#min_wait_msecs)
-  - [MAX_RETRIES](#max_retries)
-  - [defaultWaitDecide](#defaultwaitdecide)
-    - [Parameters](#parameters)
-  - [rateLimitHandler](#ratelimithandler)
-    - [Parameters](#parameters-1)
-- [install](#install)
-- [license](#license)
+*   [MIN_WAIT_MSECS](#min_wait_msecs)
+*   [MAX_RETRIES](#max_retries)
+*   [defaultWaitDecide](#defaultwaitdecide)
+    *   [Parameters](#parameters)
+*   [rateLimitHandler](#ratelimithandler)
+    *   [Parameters](#parameters-1)
 
 ## MIN_WAIT_MSECS
 
@@ -74,7 +69,7 @@ Returns **Integer** milliseconds to wait for next try or < 0 to deliver current 
 *   **See**: <https://developer.github.com/v3/#rate-limiting>
 *   **See**: <https://opensource.zalando.com/restful-api-guidelines/#153>
 
-Waits and retries after rate limit rest time has reached.
+Waits and retries after rate limit reset time has reached.
 
 ### Parameters
 
