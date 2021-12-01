@@ -39,17 +39,19 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 ## MIN_WAIT_MSECS
 
+minimum wait time in msecs
+
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
 ## MAX_RETRIES
 
-max # of wait retires
+max # of wait retries
 
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
 ## defaultWaitDecide
 
-Decide about the time to wait for a retry
+Decide about the time to wait for a retry.
 
 *   only retry [MAX_RETRIES](#max_retries) times
 *   when waiting wait at least [MIN_WAIT_MSECS](#min_wait_msecs)
