@@ -1,17 +1,17 @@
 
 
 /**
- * 
+ * minimum wait time in msecs
  */
 export const MIN_WAIT_MSECS = 10000;
 
 /**
- * max # of wait retires
+ * max # of wait retries
  */
 export const MAX_RETRIES = 5;
 
 /**
- * Decide about the time to wait for a retry
+ * Decide about the time to wait for a retry.
  * - only retry {@link MAX_RETRIES} times
  * - when waiting wait at least {@link MIN_WAIT_MSECS}
  * @param {Integer} millisecondsToWait
