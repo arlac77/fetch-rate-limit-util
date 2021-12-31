@@ -1,12 +1,12 @@
 
 
 /**
- * minimum wait time in msecs
+ * Minimum wait time in msecs.
  */
 export const MIN_WAIT_MSECS = 10000;
 
 /**
- * max # of wait retries
+ * Max # of wait retries.
  */
 export const MAX_RETRIES = 5;
 
@@ -14,7 +14,7 @@ export const MAX_RETRIES = 5;
  * Decide about the time to wait for a retry.
  * - only retry {@link MAX_RETRIES} times
  * - when waiting wait at least {@link MIN_WAIT_MSECS}
- * @param {Integer} millisecondsToWait
+ * @param {Integer} millisecondsToWait # of milliseconds to wait before retry
  * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
  * @param {Integer} nthTry how often have we retried the request already
  * @param {Object} response as returned from fetch
