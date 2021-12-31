@@ -48,18 +48,29 @@ export async function rateLimitHandler(
 
     const action = stateActions[response.status];
 
+    console.log(
+      "STATE ACTION",
+      response.status,
+      nthTry,
+      action,
+      url.toString()
+    );
     if (action === undefined) {
       return response;
     }
 
     const { retries, finished, repeatAfter } =
-      typeof action === "function" ? action(response, nthTry, waitDecide) : action;
+      typeof action === "function"
+        ? action(response, nthTry, waitDecide)
+        : action;
 
     if (finished || nthTry >= retries) {
       return response;
     }
 
-    await new Promise(resolve => setTimeout(resolve, repeatAfter));
+    if (repeatAfter > 0) {
+      await new Promise(resolve => setTimeout(resolve, repeatAfter));
+    }
   }
 }
 
@@ -84,10 +95,18 @@ function rateLimit(response, nthTry, waitDecide) {
   return { repeatAfter: millisecondsToWait };
 }
 
-const stateActions = {
-  400: { retries: 3, repeatAfter: 100 },
+export const retryAction = { retries: 3, repeatAfter: 100 };
+
+export const stateActions = {
+  400: retryAction,
   401: { finished: true },
   403: rateLimit,
+  408: retryAction,
+  423: retryAction,
   429: rateLimit,
-  500: { retries: 3, repeatAfter: 100 }
+  444: retryAction,
+  500: retryAction,
+  502: retryAction,
+  504: retryAction,
+  599: retryAction
 };
