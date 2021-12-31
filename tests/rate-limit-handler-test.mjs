@@ -6,13 +6,21 @@ async function rlt(t, headers, status = 403, expected) {
     status,
     headers: { get: name => headers[name] }
   };
+  const url = "http://somewhere";
+  const options = {};
+
+  async function myFetch(url, options) {
+    return response;
+  }
 
   if (expected === -1) {
     t.plan(0);
   }
 
   await rateLimitHandler(
-    async () => response,
+    myFetch,
+    url,
+    options,
     (millisecondsToWait, rateLimitRemaining, nthTry) => {
       //console.log(millisecondsToWait, rateLimitRemaining, nthTry);
 

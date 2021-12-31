@@ -1,5 +1,3 @@
-
-
 /**
  * Minimum wait time in msecs.
  */
@@ -39,34 +37,57 @@ export function defaultWaitDecide(
  * @param fetcher executes the fetch operation
  * @param waitDecide
  */
-export async function rateLimitHandler(fetcher, waitDecide = defaultWaitDecide) {
-  for (let i = 0; ; i++) {
-    const response = await fetcher();
+export async function rateLimitHandler(
+  fetch,
+  url,
+  args,
+  waitDecide = defaultWaitDecide
+) {
+  for (let nthTry = 1; ; nthTry++) {
+    const response = await fetch(url, args);
 
-    switch (response.status) {
-      default:
-        return response;
+    const action = stateActions[response.status];
 
-      case 403:
-      case 429:
-        const rateLimitReset = parseInt(
-          response.headers.get("x-ratelimit-reset")
-        );
-
-        let millisecondsToWait = isNaN(rateLimitReset)
-          ? 0
-          : new Date(rateLimitReset * 1000).getTime() - Date.now();
-
-        millisecondsToWait = waitDecide(
-          millisecondsToWait,
-          parseInt(response.headers.get("x-ratelimit-remaining")),
-          i,
-          response
-        );
-        if (millisecondsToWait <= 0) {
-          return response;
-        }
-        await new Promise(resolve => setTimeout(resolve, millisecondsToWait));
+    if (action === undefined) {
+      return response;
     }
+
+    const { retries, finished, repeatAfter } =
+      typeof action === "function" ? action(response, nthTry, waitDecide) : action;
+
+    if (finished || nthTry >= retries) {
+      return response;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, repeatAfter));
   }
 }
+
+function rateLimit(response, nthTry, waitDecide) {
+  const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
+
+  let millisecondsToWait = isNaN(rateLimitReset)
+    ? 0
+    : new Date(rateLimitReset * 1000).getTime() - Date.now();
+
+  millisecondsToWait = waitDecide(
+    millisecondsToWait,
+    parseInt(response.headers.get("x-ratelimit-remaining")),
+    nthTry,
+    response
+  );
+
+  if (millisecondsToWait <= 0) {
+    return { finished: true };
+  }
+
+  return { repeatAfter: millisecondsToWait };
+}
+
+const stateActions = {
+  400: { retries: 3, repeatAfter: 100 },
+  401: { finished: true },
+  403: rateLimit,
+  429: rateLimit,
+  500: { retries: 3, repeatAfter: 100 }
+};
