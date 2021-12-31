@@ -59,12 +59,12 @@ export async function rateLimitHandler(
       return response;
     }
 
-    const { retries, finished, repeatAfter } =
+    const { retries, repeatAfter } =
       typeof action === "function"
         ? action(response, nthTry, waitDecide)
         : action;
 
-    if (finished || nthTry >= retries) {
+    if (nthTry >= retries) {
       return response;
     }
 
@@ -89,22 +89,24 @@ function rateLimit(response, nthTry, waitDecide) {
   );
 
   if (millisecondsToWait <= 0) {
-    return { finished: true };
+    return { retries: 0 };
   }
 
   return { repeatAfter: millisecondsToWait };
 }
 
 export const retryAction = { retries: 3, repeatAfter: 100 };
+export const finishAction = { retries: 0 };
 
 export const stateActions = {
   400: retryAction,
-  401: { finished: true },
+  401: finishAction,
   403: rateLimit,
   408: retryAction,
   423: retryAction,
   429: rateLimit,
   444: retryAction,
+  451: finishAction,
   500: retryAction,
   502: retryAction,
   504: retryAction,
