@@ -1,48 +1,54 @@
+/**
+ * @typedef {Object} HandlerResult
+ * @property {number} [retries] max number of retries that should be executed
+ * @property {repeastAfter} [number] of milliseconds to wait befor next try
+ */
 
 /**
- * Waits and retries after rate limit reset time has reached.
- * @see https://auth0.com/docs/policies/rate-limit-policy
- * @see https://developer.github.com/v3/#rate-limiting
- * @see https://opensource.zalando.com/restful-api-guidelines/#153
+ *
  * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
- * @param {Object} options
+ * @param {Object} fetchOptions
  * @param {Object} stateActions
- * @return {Promise<Object>}
+ * @return {Promise<Response>} from fetch
  */
 export async function stateActionHandler(
   fetch,
   url,
-  args,
-  stateActions=defaultStateActions
+  fetchOptions,
+  postprocess = response => response,
+  stateActions = defaultStateActions
 ) {
   for (let nthTry = 1; ; nthTry++) {
-    const response = await fetch(url, args);
+    try {
+      const response = await fetch(url, fetchOptions);
 
-    const action = stateActions[response.status];
+      const action = stateActions[response.status];
 
-    console.log(
-      "STATE ACTION",
-      response.status,
-      nthTry,
-      action,
-      url.toString()
-    );
-    if (action === undefined) {
-      return response;
-    }
+      console.log(
+        "STATE ACTION",
+        response.status,
+        nthTry,
+        action,
+        url.toString()
+      );
 
-    const { retries, repeatAfter } =
-      typeof action === "function"
-        ? action(response, nthTry)
-        : action;
+      if (action === undefined) {
+        return postprocess(response);
+      }
 
-    if (nthTry >= retries) {
-      return response;
-    }
+      const { retries, repeatAfter } =
+        typeof action === "function" ? action(response, nthTry) : action;
 
-    if (repeatAfter > 0) {
-      await new Promise(resolve => setTimeout(resolve, repeatAfter));
+      if (nthTry >= retries) {
+        return postprocess(response);
+      }
+
+      if (repeatAfter > 0) {
+        await new Promise(resolve => setTimeout(resolve, repeatAfter));
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 }
@@ -50,34 +56,43 @@ export async function stateActionHandler(
 /**
  * Minimum wait time in msecs.
  */
- export const MIN_WAIT_MSECS = 10000;
+export const MIN_WAIT_MSECS = 10000;
 
- /**
-  * Max # of wait retries.
-  */
- export const MAX_RETRIES = 5;
- 
- /**
-  * Decide about the time to wait for a retry.
-  * - only retry {@link MAX_RETRIES} times
-  * - when waiting wait at least {@link MIN_WAIT_MSECS}
-  * @param {Integer} millisecondsToWait # of milliseconds to wait before retry
-  * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
-  * @param {Integer} nthTry how often have we retried the request already
-  * @param {Object} response as returned from fetch
-  * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
-  */
- export function waitDecide(
-   millisecondsToWait,
-   rateLimitRemaining,
-   nthTry,
-   response
- ) {
-   if (nthTry > MAX_RETRIES) return -1;
- 
-   return millisecondsToWait + MIN_WAIT_MSECS;
- }
- 
+/**
+ * Max # of wait retries.
+ */
+export const MAX_RETRIES = 5;
+
+/**
+ * Decide about the time to wait for a retry.
+ * - only retry {@link MAX_RETRIES} times
+ * - when waiting wait at least {@link MIN_WAIT_MSECS}
+ * @param {Integer} millisecondsToWait # of milliseconds to wait before retry
+ * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
+ * @param {Integer} nthTry how often have we retried the request already
+ * @param {Object} response as returned from fetch
+ * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
+ */
+export function waitDecide(
+  millisecondsToWait,
+  rateLimitRemaining,
+  nthTry,
+  response
+) {
+  if (nthTry > MAX_RETRIES) return -1;
+
+  return millisecondsToWait + MIN_WAIT_MSECS;
+}
+
+/**
+ * Waits and retries after rate limit reset time has reached.
+ * @see https://auth0.com/docs/policies/rate-limit-policy
+ * @see https://developer.github.com/v3/#rate-limiting
+ * @see https://opensource.zalando.com/restful-api-guidelines/#153
+ * @param {Response} response
+ * @param {number} nthTry
+ * @returns {HandlerResult}
+ */
 export function rateLimit(response, nthTry) {
   const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
 
@@ -99,7 +114,7 @@ export function rateLimit(response, nthTry) {
   return { repeatAfter: millisecondsToWait };
 }
 
-export const retryAction = { retries: 3, repeatAfter: 100 };
+export const retryAction = { retries: 3, repeatAfter: 2000 };
 export const finishAction = { retries: 0 };
 
 export const defaultStateActions = {
