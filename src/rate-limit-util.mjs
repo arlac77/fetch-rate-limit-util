@@ -31,13 +31,12 @@ export async function stateActionHandler(
           "STATE ACTION",
           response.status,
           nthTry,
-          action,
+          action.name,
           url.toString()
         );
       }
 
-      const { retries, repeatAfter } =
-        typeof action === "function" ? action(response, nthTry, reporter) : action;
+      const { retries, repeatAfter } = action(response, nthTry, reporter);
 
       if (nthTry >= retries) {
         return postprocess(response);
@@ -112,27 +111,30 @@ export function rateLimit(response, nthTry, reporter) {
     return { retries: 0 };
   }
 
-  if(reporter) {
+  if (reporter) {
     reporter(`Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
   }
-  
+
   return { repeatAfter: millisecondsToWait };
 }
 
-export const retryAction = { retries: 3, repeatAfter: 2000 };
-export const finishAction = { retries: 0 };
+function retryAction() {
+  return { retries: 3, repeatAfter: 2000 };
+}
 
-const defaultAction = { retries: 0 };
+function defaultAction() {
+  return { retries: 0 };
+}
 
 export const defaultStateActions = {
   400: retryAction,
-  401: finishAction,
+  401: defaultAction,
   403: rateLimit,
   408: retryAction,
   423: retryAction,
   429: rateLimit,
   444: retryAction,
-  451: finishAction,
+  451: defaultAction,
   500: retryAction,
   502: retryAction,
   504: retryAction,
