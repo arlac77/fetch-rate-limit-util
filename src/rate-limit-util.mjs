@@ -37,7 +37,7 @@ export async function stateActionHandler(
       }
 
       const { retries, repeatAfter } =
-        typeof action === "function" ? action(response, nthTry) : action;
+        typeof action === "function" ? action(response, nthTry, reporter) : action;
 
       if (nthTry >= retries) {
         return postprocess(response);
@@ -94,7 +94,7 @@ export function waitDecide(
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function rateLimit(response, nthTry) {
+export function rateLimit(response, nthTry, reporter) {
   const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
 
   let millisecondsToWait = isNaN(rateLimitReset)
@@ -112,6 +112,10 @@ export function rateLimit(response, nthTry) {
     return { retries: 0 };
   }
 
+  if(reporter) {
+    reporter(`Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
+  }
+  
   return { repeatAfter: millisecondsToWait };
 }
 
