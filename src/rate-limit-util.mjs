@@ -17,24 +17,23 @@ export async function stateActionHandler(
   url,
   fetchOptions,
   postprocess = response => response,
-  stateActions = defaultStateActions
+  stateActions = defaultStateActions,
+  reporter = console.log
 ) {
   for (let nthTry = 1; ; nthTry++) {
     try {
       const response = await fetch(url, fetchOptions);
 
-      const action = stateActions[response.status];
+      const action = stateActions[response.status] || defaultAction;
 
-      console.log(
-        "STATE ACTION",
-        response.status,
-        nthTry,
-        action,
-        url.toString()
-      );
-
-      if (action === undefined) {
-        return postprocess(response);
+      if (reporter) {
+        reporter(
+          "STATE ACTION",
+          response.status,
+          nthTry,
+          action,
+          url.toString()
+        );
       }
 
       const { retries, repeatAfter } =
@@ -48,7 +47,9 @@ export async function stateActionHandler(
         await new Promise(resolve => setTimeout(resolve, repeatAfter));
       }
     } catch (e) {
-      console.log(e);
+      if (reporter) {
+        reporter(e);
+      }
     }
   }
 }
@@ -116,6 +117,8 @@ export function rateLimit(response, nthTry) {
 
 export const retryAction = { retries: 3, repeatAfter: 2000 };
 export const finishAction = { retries: 0 };
+
+const defaultAction = { retries: 0 };
 
 export const defaultStateActions = {
   400: retryAction,
