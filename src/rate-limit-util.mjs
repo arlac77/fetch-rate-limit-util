@@ -23,27 +23,24 @@ export async function stateActionHandler(
   for (let nthTry = 1; ; nthTry++) {
     try {
       const response = await fetch(url, fetchOptions);
-
       const action = stateActions[response.status] || defaultAction;
+
+      const repeatAfter = action(response, nthTry, reporter);
 
       if (reporter) {
         reporter(
-          "STATE ACTION",
+          url.toString(),
           response.status,
           nthTry,
           action.name,
-          url.toString()
+          repeatAfter
         );
-      }
-
-      const { retries, repeatAfter } = action(response, nthTry, reporter);
-
-      if (nthTry >= retries) {
-        return postprocess(response);
       }
 
       if (repeatAfter > 0) {
         await new Promise(resolve => setTimeout(resolve, repeatAfter));
+      } else {
+        return postprocess(response);
       }
     } catch (e) {
       if (reporter) {
@@ -108,23 +105,23 @@ export function rateLimit(response, nthTry, reporter) {
   );
 
   if (millisecondsToWait <= 0) {
-    return { retries: 0 };
+    return;
   }
 
   if (reporter) {
     reporter(`Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
   }
 
-  return { repeatAfter: millisecondsToWait };
+  return millisecondsToWait;
 }
 
-function retryAction() {
-  return { retries: 3, repeatAfter: 2000 };
+function retryAction(response, nthTry) {
+  if (nthTry <= 3) {
+    return 2000;
+  }
 }
 
-function defaultAction() {
-  return { retries: 0 };
-}
+function defaultAction(response, nthTry) {}
 
 export const defaultStateActions = {
   400: retryAction,
