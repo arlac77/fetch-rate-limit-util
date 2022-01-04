@@ -20,7 +20,7 @@ export async function stateActionHandler(
   stateActions = defaultStateActions,
   reporter = console.log
 ) {
-  for (let nthTry = 1; ; nthTry++) {
+  for (let nthTry = 1; nthTry < 10; nthTry++) {
     try {
       const response = await fetch(url, fetchOptions);
       const action = stateActions[response.status] || defaultAction;
