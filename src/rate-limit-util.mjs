@@ -24,8 +24,8 @@ export async function stateActionHandler(
     try {
       const response = await fetch(url, fetchOptions);
       const action = stateActions[response.status] || defaultAction;
-
       const actionResult = action(response, nthTry, reporter);
+
       if (reporter) {
         reporter(
           url.toString(),
@@ -36,15 +36,14 @@ export async function stateActionHandler(
         );
       }
 
+      if (actionResult.repeatAfter === undefined) {
+        return postprocess(response);
+      }
 
       if (actionResult.repeatAfter > 0) {
         await new Promise(resolve =>
           setTimeout(resolve, actionResult.repeatAfter)
         );
-      } else {
-        if(actionResult.repeatAfter === undefined) {
-          return postprocess(response);
-        }
       }
 
       if (actionResult.url) {
