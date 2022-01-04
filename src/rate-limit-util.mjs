@@ -25,22 +25,30 @@ export async function stateActionHandler(
       const response = await fetch(url, fetchOptions);
       const action = stateActions[response.status] || defaultAction;
 
-      const repeatAfter = action(response, nthTry, reporter);
-
+      const actionResult = action(response, nthTry, reporter);
       if (reporter) {
         reporter(
           url.toString(),
           response.status,
           nthTry,
           action.name,
-          repeatAfter
+          actionResult
         );
       }
 
-      if (repeatAfter > 0) {
-        await new Promise(resolve => setTimeout(resolve, repeatAfter));
+
+      if (actionResult.repeatAfter > 0) {
+        await new Promise(resolve =>
+          setTimeout(resolve, actionResult.repeatAfter)
+        );
       } else {
-        return postprocess(response);
+        if(actionResult.repeatAfter === undefined) {
+          return postprocess(response);
+        }
+      }
+
+      if (actionResult.url) {
+        url = actionResult.url;
       }
     } catch (e) {
       if (reporter) {
@@ -105,25 +113,40 @@ export function rateLimit(response, nthTry, reporter) {
   );
 
   if (millisecondsToWait <= 0) {
-    return;
+    return {};
   }
 
   if (reporter) {
     reporter(`Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
   }
 
-  return millisecondsToWait;
+  return { repeatAfter: millisecondsToWait };
 }
 
 function retryAction(response, nthTry) {
   if (nthTry <= 3) {
-    return 2000;
+    return { repeatAfter: 2000 };
   }
+
+  return {};
 }
 
-function defaultAction(response, nthTry) {}
+function redirectAction(response, nthTry) {
+  if (nthTry <= 3) {
+    return { repeatAfter: 0, url: response.headers.get("location") };
+  }
+  return {};
+}
+
+function defaultAction(response, nthTry) {
+  return {};
+}
 
 export const defaultStateActions = {
+  301: redirectAction,
+  302: redirectAction,
+  307: redirectAction,
+  308: redirectAction,
   400: retryAction,
   401: defaultAction,
   403: rateLimit,

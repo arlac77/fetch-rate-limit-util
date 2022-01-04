@@ -9,16 +9,16 @@ async function rlt(t, headers, nthRetry, expected) {
   if (typeof expected === "function") {
     t.true(expected(rateLimit(response, nthRetry)));
   } else {
-    t.is(expected, rateLimit(response, nthRetry));
+    t.deepEqual(expected, rateLimit(response, nthRetry));
   }
 }
 
 rlt.title = (providedTitle, headers, nthRetry, expected) =>
   `rate limit ${JSON.stringify(headers)} ${nthRetry}`.trim();
 
-test(rlt, {}, 1, 10000 );
-test(rlt, {}, 6, undefined);
-test(rlt, { "x-ratelimit-reset": "abc" }, 1, 10000 );
+test(rlt, {}, 1, { repeatAfter: 10000 });
+test(rlt, {}, 6, {});
+test(rlt, { "x-ratelimit-reset": "abc" }, 1, { repeatAfter: 10000 });
 
 test(
   rlt,
@@ -26,7 +26,7 @@ test(
     "x-ratelimit-reset": Date.now() / 1000 + 1
   },
   1,
-  expected => expected > 10000
+  expected => expected.repeatAfter > 10000
 );
 
 /*
