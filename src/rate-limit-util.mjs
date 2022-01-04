@@ -142,6 +142,7 @@ function defaultAction(response, nthTry) {
 }
 
 export const defaultStateActions = {
+  201: defaultAction, // Created
   301: redirectAction,
   302: redirectAction,
   307: redirectAction,
@@ -149,6 +150,7 @@ export const defaultStateActions = {
   400: retryAction,
   401: defaultAction,
   403: rateLimit,
+  404: defaultAction, // NOT Found
   408: retryAction,
   423: retryAction,
   429: rateLimit,
