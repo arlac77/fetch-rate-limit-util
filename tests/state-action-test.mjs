@@ -2,27 +2,48 @@ import test from "ava";
 import { stateActionHandler } from "fetch-rate-limit-util";
 
 async function sat(t, request, responses, expected) {
-  const response = await stateActionHandler(
-    async function (url, options) {
-      const r = responses.shift() || { status: 500 };
+  let iter = 0;
+  let usedResponse;
 
-      const response = {
-        url,
-        headers: { get: name => r.headers[name] },
-        status: r.status
-      };
-      return response;
-    },
-    request.url,
-    { ...request.options },
-    undefined
-    //  () => {}
-  );
+  try {
+    const response = await stateActionHandler(
+      async function (url, options) {
+        usedResponse = responses[iter] || { status: 500 };
+        iter++;
 
-  t.is(response.status, expected.status);
+        return {
+          url,
+          headers: { get: name => usedResponse.headers[name] },
+          status: usedResponse.status,
+          ok: true
+        };
+      },
+      request.url,
+      { ...request.options },
+      async response => {
+        if (usedResponse && usedResponse.postProcessingException) {
+          throw usedResponse.postProcessingException;
+        }
 
-  if (expected.url) {
-    t.is(response.url, expected.url);
+        return response;
+      }
+    );
+
+    t.truthy(response);
+
+    t.is(response.status, expected.status);
+
+    if (expected.url) {
+      t.is(response.url, expected.url);
+    }
+  } catch (e) {
+    if (usedResponse && usedResponse.postProcessingException) {
+     // t.log("MESSAGE",e.message,response.message);
+    //  t.is(e.message,usedResponse.postProcessingException.message);
+      t.true(true);
+    } else {
+      throw e;
+    }
   }
 }
 sat.title = (providedTitle = "state action", request, responses, expected) =>
@@ -33,6 +54,14 @@ sat.title = (providedTitle = "state action", request, responses, expected) =>
 const REQUEST = { url: "http://somewhere/" };
 
 test(sat, REQUEST, [{ status: 200 }], { status: 200 });
+
+test(
+  sat,
+  REQUEST,
+  [{ postProcessingException: new Error("Premature close"), status: 200 }],
+  new Error("Premature closer")
+);
+
 test(
   sat,
   REQUEST,

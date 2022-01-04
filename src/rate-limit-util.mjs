@@ -21,10 +21,11 @@ export async function stateActionHandler(
   reporter = console.log
 ) {
   for (let nthTry = 1; nthTry < 10; nthTry++) {
+    let actionResult;
     try {
       const response = await fetch(url, fetchOptions);
       const action = stateActions[response.status] || defaultAction;
-      const actionResult = action(response, nthTry, reporter);
+      actionResult = action(response, nthTry, reporter);
 
       if (reporter) {
         reporter(
@@ -50,11 +51,17 @@ export async function stateActionHandler(
         url = actionResult.url;
       }
     } catch (e) {
+      if (actionResult.repeatAfter === undefined) {
+        throw e;
+      }
+
       if (reporter) {
         reporter(e);
       }
     }
   }
+
+  //throw new Error("Max retry count reached");
 }
 
 /**
