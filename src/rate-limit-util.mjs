@@ -9,7 +9,9 @@
  * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
  * @param {Object} fetchOptions
+ * @param {Function} postprocess
  * @param {Object} stateActions
+ * @param {Function} reporter
  * @return {Promise<Response>} from fetch
  */
 export async function stateActionHandler(
@@ -18,7 +20,7 @@ export async function stateActionHandler(
   fetchOptions,
   postprocess = response => response,
   stateActions = defaultStateActions,
-  reporter = console.log
+  reporter /*= console.log*/
 ) {
   for (let nthTry = 1; nthTry < 10; nthTry++) {
     let actionResult;
