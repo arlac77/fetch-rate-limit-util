@@ -133,7 +133,7 @@ export function rateLimit(response, nthTry, reporter) {
 
 function retryAction(response, nthTry) {
   if (nthTry <= 3) {
-    return { repeatAfter: 2000 };
+    return { repeatAfter: 5000 };
   }
 
   return {};
