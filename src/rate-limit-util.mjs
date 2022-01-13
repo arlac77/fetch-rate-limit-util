@@ -53,6 +53,14 @@ export async function stateActionHandler(
         url = actionResult.url;
       }
     } catch (e) {
+
+      /*
+        type: 'system',
+        errno: 'ERR_STREAM_PREMATURE_CLOSE',
+        code: 'ERR_STREAM_PREMATURE_CLOSE',
+        erroredSysCall: undefined
+       */
+      
       if (actionResult.repeatAfter === undefined) {
         throw e;
       }
