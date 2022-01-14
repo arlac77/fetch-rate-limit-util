@@ -55,7 +55,7 @@ const REQUEST = { url: "http://somewhere/" };
 
 test(sat, REQUEST, [{ status: 200 }], { status: 200 });
 
-test.only(
+test(
   sat,
   REQUEST,
   [{ postProcessingException: new Error("Premature close"), status: 200 }],
