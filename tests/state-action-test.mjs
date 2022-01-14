@@ -38,8 +38,8 @@ async function sat(t, request, responses, expected) {
     }
   } catch (e) {
     if (usedResponse && usedResponse.postProcessingException) {
-     // t.log("MESSAGE",e.message,response.message);
-    //  t.is(e.message,usedResponse.postProcessingException.message);
+      //t.log("MESSAGE", e.message, expected.message);
+      t.is(e.message, expected.message);
       t.true(true);
     } else {
       throw e;
@@ -55,11 +55,11 @@ const REQUEST = { url: "http://somewhere/" };
 
 test(sat, REQUEST, [{ status: 200 }], { status: 200 });
 
-test(
+test.only(
   sat,
   REQUEST,
   [{ postProcessingException: new Error("Premature close"), status: 200 }],
-  new Error("Premature closer")
+  new Error("Premature close")
 );
 
 test(
