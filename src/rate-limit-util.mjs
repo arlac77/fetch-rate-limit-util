@@ -22,7 +22,7 @@ export async function stateActionHandler(
   stateActions = defaultStateActions,
   reporter /*= console.log*/
 ) {
-  for (let nthTry = 1; nthTry < 10; nthTry++) {
+  for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
     let actionResult;
     try {
       const response = await fetch(url, fetchOptions);
@@ -53,7 +53,6 @@ export async function stateActionHandler(
         url = actionResult.url;
       }
     } catch (e) {
-
       /*
         type: 'system',
         errno: 'ERR_STREAM_PREMATURE_CLOSE',
@@ -61,7 +60,7 @@ export async function stateActionHandler(
         erroredSysCall: undefined
        */
       
-      if (actionResult.repeatAfter === undefined) {
+      if (actionResult === undefined || actionResult.repeatAfter === undefined) {
         throw e;
       }
 
@@ -71,7 +70,7 @@ export async function stateActionHandler(
     }
   }
 
-  //throw new Error("Max retry count reached");
+  throw new Error(`${url}: Max retry count reached`);
 }
 
 /**
@@ -82,7 +81,7 @@ export const MIN_WAIT_MSECS = 10000;
 /**
  * Max # of wait retries.
  */
-export const MAX_RETRIES = 5;
+export const MAX_RETRIES = 4;
 
 /**
  * Decide about the time to wait for a retry.
