@@ -26,7 +26,9 @@ async function sat(t, request, responses, expected) {
         }
 
         return response;
-      }
+      },
+      undefined,
+      console.log
     );
 
     t.truthy(response);
@@ -37,10 +39,8 @@ async function sat(t, request, responses, expected) {
       t.is(response.url, expected.url);
     }
   } catch (e) {
-    if (usedResponse && usedResponse.postProcessingException) {
-      //t.log("MESSAGE", e.message, expected.message);
+    if (expected && expected.message) {
       t.is(e.message, expected.message);
-      t.true(true);
     } else {
       throw e;
     }
@@ -54,6 +54,20 @@ sat.title = (providedTitle = "state action", request, responses, expected) =>
 const REQUEST = { url: "http://somewhere/" };
 
 test(sat, REQUEST, [{ status: 200 }], { status: 200 });
+
+test.skip(
+  sat,
+  REQUEST,
+  [
+    { status: 500 },
+    { status: 500 },
+    { status: 500 },
+    { status: 500 },
+    { status: 500 },
+    { status: 500 }
+  ],
+  new Error("http://somewhere/: Max retry count reached")
+);
 
 test(
   sat,
@@ -75,9 +89,10 @@ test(
   }
 );
 
-test(sat, REQUEST, [{ status: 500 }, { status: 500 }, { status: 500 }], {
+test.skip(sat, REQUEST, [{ status: 500 }, { status: 500 }], {
   status: 500
 });
+
 test(
   sat,
   REQUEST,
