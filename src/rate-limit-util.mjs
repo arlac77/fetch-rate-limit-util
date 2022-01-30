@@ -31,7 +31,7 @@ export async function stateActionHandler(
 
       if (reporter) {
         reporter(
-          url.toString(),
+          url,
           response.status,
           nthTry,
           action.name,
@@ -65,7 +65,7 @@ export async function stateActionHandler(
       }
 
       if (reporter) {
-        reporter(e);
+        reporter(url, e);
       }
     }
   }
@@ -132,7 +132,7 @@ export function rateLimit(response, nthTry, reporter) {
   }
 
   if (reporter) {
-    reporter(`Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
+    reporter(response.url, `Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
   }
 
   return { repeatAfter: millisecondsToWait };
