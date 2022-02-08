@@ -8,7 +8,7 @@ async function sat(t, request, responses, expected) {
   try {
     const response = await stateActionHandler(
       async function (url, options) {
-        usedResponse = responses[iter] || { status: 500 };
+        usedResponse = responses[iter] || { status: -1 };
         iter++;
 
         return {
@@ -55,7 +55,7 @@ const REQUEST = { url: "http://somewhere/" };
 
 test(sat, REQUEST, [{ status: 200 }], { status: 200 });
 
-test.skip(
+test(
   sat,
   REQUEST,
   [
