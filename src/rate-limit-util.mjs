@@ -20,7 +20,7 @@ export async function stateActionHandler(
   fetchOptions,
   postprocess = response => response,
   stateActions = defaultStateActions,
-  reporter /*= console.log*/
+  reporter
 ) {
   for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
     let actionResult;
@@ -158,6 +158,8 @@ function defaultAction(response, nthTry) {
 }
 
 export const defaultStateActions = {
+  "-1": retryAction,
+  0: retryAction,
   201: defaultAction, // Created
   301: redirectAction,
   302: redirectAction,
@@ -167,7 +169,8 @@ export const defaultStateActions = {
   401: defaultAction,
   403: rateLimit,
   404: defaultAction, // NOT Found
-  408: retryAction,
+  408: retryAction,  // Request timeout
+  422: defaultAction, // UNPROCESSABLE ENTITY
   423: retryAction,
   429: rateLimit,
   444: retryAction,
