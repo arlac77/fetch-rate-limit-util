@@ -70,7 +70,7 @@ export async function stateActionHandler(
     }
   }
 
-  throw new Error(`${url}: Max retry count reached`);
+  throw new Error(`${url}: Max retry count reached (${MAX_RETRIES})`);
 }
 
 /**
