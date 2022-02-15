@@ -1,5 +1,5 @@
 import test from "ava";
-import { stateActionHandler } from "fetch-rate-limit-util";
+import { MAX_RETRIES, stateActionHandler } from "fetch-rate-limit-util";
 
 async function sat(t, request, responses, expected) {
   let iter = 0;
@@ -66,7 +66,7 @@ test(
     { status: 500 },
     { status: 500 }
   ],
-  new Error("http://somewhere/: Max retry count reached (4)")
+  new Error(`http://somewhere/: Max retry count reached (${MAX_RETRIES})`)
 );
 
 test(
