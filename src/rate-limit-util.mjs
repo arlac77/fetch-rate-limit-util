@@ -5,13 +5,20 @@
  */
 
 /**
+ * @typedef {Function} RequestReporter
+ * @property {String} url to be requested
+ * @property {String|Error} status result og the last request
+ * @property {number} nthTry retried how often
+ */
+
+/**
  *
  * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
  * @param {Object} fetchOptions
  * @param {Function} postprocess
  * @param {Object} stateActions
- * @param {Function} reporter
+ * @param {RequestReporter} reporter
  * @return {Promise<Response>} from fetch
  */
 export async function stateActionHandler(
@@ -33,9 +40,7 @@ export async function stateActionHandler(
         reporter(
           url,
           response.status,
-          nthTry,
-          action.name,
-          actionResult
+          nthTry
         );
       }
 
@@ -65,7 +70,7 @@ export async function stateActionHandler(
       }
 
       if (reporter) {
-        reporter(url, e);
+        reporter(url, e, nthTry);
       }
     }
   }
@@ -111,6 +116,7 @@ export function waitDecide(
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
  * @param {Response} response
  * @param {number} nthTry
+ * @param {RequestReporter} reporter
  * @returns {HandlerResult}
  */
 export function rateLimit(response, nthTry, reporter) {
