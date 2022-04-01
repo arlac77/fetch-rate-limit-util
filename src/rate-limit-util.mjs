@@ -37,11 +37,7 @@ export async function stateActionHandler(
       actionResult = action(response, nthTry, reporter);
 
       if (reporter) {
-        reporter(
-          url,
-          response.status,
-          nthTry
-        );
+        reporter(url, response.status, nthTry);
       }
 
       if (actionResult.repeatAfter === undefined) {
@@ -64,13 +60,25 @@ export async function stateActionHandler(
         code: 'ERR_STREAM_PREMATURE_CLOSE',
         erroredSysCall: undefined
        */
-      
-      if (actionResult === undefined || actionResult.repeatAfter === undefined) {
+
+      const action = stateActions[e.errno] || defaultAction;
+      actionResult = action(undefined, nthTry, reporter);
+
+      if (
+        actionResult === undefined ||
+        actionResult.repeatAfter === undefined
+      ) {
         throw e;
       }
 
       if (reporter) {
         reporter(url, e, nthTry);
+      }
+
+      if (actionResult.repeatAfter > 0) {
+        await new Promise(resolve =>
+          setTimeout(resolve, actionResult.repeatAfter)
+        );
       }
     }
   }
@@ -138,7 +146,10 @@ export function rateLimit(response, nthTry, reporter) {
   }
 
   if (reporter) {
-    reporter(response.url, `Rate limit reached: waiting for ${millisecondsToWait / 1000}s`);
+    reporter(
+      response.url,
+      `Rate limit reached: waiting for ${millisecondsToWait / 1000}s`
+    );
   }
 
   return { repeatAfter: millisecondsToWait };
@@ -175,7 +186,7 @@ export const defaultStateActions = {
   401: defaultAction,
   403: rateLimit,
   404: defaultAction, // NOT Found
-  408: retryAction,  // Request timeout
+  408: retryAction, // Request timeout
   422: defaultAction, // UNPROCESSABLE ENTITY
   423: retryAction,
   429: rateLimit,
@@ -184,5 +195,7 @@ export const defaultStateActions = {
   500: retryAction,
   502: retryAction,
   504: retryAction,
-  599: retryAction
+  599: retryAction,
+
+  ERR_STREAM_PREMATURE_CLOSE: retryAction
 };
