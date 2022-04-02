@@ -41,7 +41,7 @@ export async function stateActionHandler(
       }
 
       if (actionResult.repeatAfter === undefined) {
-        return postprocess(response);
+        return await postprocess(response);
       }
 
       if (actionResult.repeatAfter > 0) {
