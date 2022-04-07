@@ -155,9 +155,20 @@ export function rateLimit(response, nthTry, reporter) {
   return { repeatAfter: millisecondsToWait };
 }
 
+/**
+ * Increasing delay for each retry
+ */
+const retryTimes = [100, 5000, 30000, 60000];
+
+/**
+ * try 3 times with a delay
+ * @param {Object} response
+ * @param {number} nthTry
+ * @returns
+ */
 function retryAction(response, nthTry) {
   if (nthTry <= 3) {
-    return { repeatAfter: 5000 };
+    return { repeatAfter: retryTimes[nthTry] };
   }
 
   return {};
