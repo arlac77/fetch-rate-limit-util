@@ -30,17 +30,54 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 #### Table of Contents
 
-- [fetch-rate-limit-util](#fetch-rate-limit-util)
-- [API](#api)
-      - [Table of Contents](#table-of-contents)
-    - [MIN_WAIT_MSECS](#min_wait_msecs)
-    - [MAX_RETRIES](#max_retries)
-    - [defaultWaitDecide](#defaultwaitdecide)
-      - [Parameters](#parameters)
-    - [rateLimitHandler](#ratelimithandler)
-      - [Parameters](#parameters-1)
-- [install](#install)
-- [license](#license)
+*   [HandlerResult](#handlerresult)
+    *   [Properties](#properties)
+*   [RequestReporter](#requestreporter)
+    *   [Properties](#properties-1)
+*   [stateActionHandler](#stateactionhandler)
+    *   [Parameters](#parameters)
+*   [MIN_WAIT_MSECS](#min_wait_msecs)
+*   [MAX_RETRIES](#max_retries)
+*   [waitDecide](#waitdecide)
+    *   [Parameters](#parameters-1)
+*   [rateLimit](#ratelimit)
+    *   [Parameters](#parameters-2)
+*   [retryTimes](#retrytimes)
+*   [retryAction](#retryaction)
+    *   [Parameters](#parameters-3)
+
+### HandlerResult
+
+Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+*   `retries` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** max number of retries that should be executed
+*   `number` **repeastAfter?** of milliseconds to wait befor next try
+*   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to report
+
+### RequestReporter
+
+Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)
+
+#### Properties
+
+*   `url` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to be requested
+*   `status` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error))** result og the last request
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** how often have we retried
+
+### stateActionHandler
+
+#### Parameters
+
+*   `fetch` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** executes the fetch operation
+*   `url` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [URL](https://developer.mozilla.org/docs/Web/API/URL/URL))** 
+*   `fetchOptions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)**  (optional, default `response=>response`)
+*   `stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `defaultStateActions`)
+*   `reporter` **[RequestReporter](#requestreporter)** 
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)>** from fetch
 
 ### MIN_WAIT_MSECS
 
@@ -54,7 +91,7 @@ Max # of wait retries.
 
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
-### defaultWaitDecide
+### waitDecide
 
 Decide about the time to wait for a retry.
 
@@ -70,7 +107,7 @@ Decide about the time to wait for a retry.
 
 Returns **Integer** milliseconds to wait for next try or < 0 to deliver current response
 
-### rateLimitHandler
+### rateLimit
 
 *   **See**: <https://auth0.com/docs/policies/rate-limit-policy>
 *   **See**: <https://developer.github.com/v3/#rate-limiting>
@@ -80,8 +117,24 @@ Waits and retries after rate limit reset time has reached.
 
 #### Parameters
 
-*   `fetcher`  executes the fetch operation
-*   `waitDecide`   (optional, default `defaultWaitDecide`)
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+*   `reporter` **[RequestReporter](#requestreporter)** 
+
+Returns **[HandlerResult](#handlerresult)** 
+
+### retryTimes
+
+Increasing delay for each retry
+
+### retryAction
+
+Try 3 times with a delay.
+
+#### Parameters
+
+*   `response` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
 # install
 
