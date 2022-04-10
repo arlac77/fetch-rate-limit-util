@@ -10,8 +10,8 @@
   },
   "description": "handle fetch errors and rate limits",
   "keywords": [
-    "rate-limit",
-    "fetch"
+    "fetch",
+    "rate-limit"
   ],
   "contributors": [
     {
