@@ -16,9 +16,9 @@ async function rlt(t, headers, nthRetry, expected) {
 rlt.title = (providedTitle, headers, nthRetry, expected) =>
   `rate limit ${JSON.stringify(headers)} ${nthRetry}`.trim();
 
-test(rlt, {}, 1, { repeatAfter: 10000 });
+test(rlt, {}, 1, { repeatAfter: 10000, message: "Rate limit reached: waiting for 10s" });
 test(rlt, {}, 6, {});
-test(rlt, { "x-ratelimit-reset": "abc" }, 1, { repeatAfter: 10000 });
+test(rlt, { "x-ratelimit-reset": "abc" }, 1, { repeatAfter: 10000, message: "Rate limit reached: waiting for 10s" });
 
 test(
   rlt,

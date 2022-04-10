@@ -2,14 +2,30 @@
  * @typedef {Object} HandlerResult
  * @property {number} [retries] max number of retries that should be executed
  * @property {repeastAfter} [number] of milliseconds to wait befor next try
+ * @property {string} message to report
  */
 
 /**
  * @typedef {Function} RequestReporter
  * @property {String} url to be requested
  * @property {String|Error} status result og the last request
- * @property {number} nthTry retried how often
+ * @property {number} nthTry how often have we retried
  */
+
+
+async function wait(url, actionResult, reporter)
+{
+  if (actionResult.repeatAfter > 0) {
+    if (reporter && actionResult.message) {
+      reporter(url, actionResult.message);
+    }
+
+    await new Promise(resolve =>
+      setTimeout(resolve, actionResult.repeatAfter)
+    );
+  }
+
+}
 
 /**
  *
@@ -34,7 +50,7 @@ export async function stateActionHandler(
     try {
       const response = await fetch(url, fetchOptions);
       const action = stateActions[response.status] || defaultAction;
-      actionResult = action(response, nthTry, reporter);
+      actionResult = action(response, nthTry);
 
       if (reporter) {
         reporter(url, response.status, nthTry);
@@ -44,11 +60,7 @@ export async function stateActionHandler(
         return await postprocess(response);
       }
 
-      if (actionResult.repeatAfter > 0) {
-        await new Promise(resolve =>
-          setTimeout(resolve, actionResult.repeatAfter)
-        );
-      }
+      await wait(url, actionResult, reporter);
 
       if (actionResult.url) {
         url = actionResult.url;
@@ -62,7 +74,7 @@ export async function stateActionHandler(
        */
 
       const action = stateActions[e.errno] || defaultAction;
-      actionResult = action(undefined, nthTry, reporter);
+      actionResult = action(undefined, nthTry);
 
       if (
         actionResult === undefined ||
@@ -75,11 +87,7 @@ export async function stateActionHandler(
         reporter(url, e, nthTry);
       }
 
-      if (actionResult.repeatAfter > 0) {
-        await new Promise(resolve =>
-          setTimeout(resolve, actionResult.repeatAfter)
-        );
-      }
+      await wait(url, actionResult, reporter);
     }
   }
 
@@ -127,7 +135,7 @@ export function waitDecide(
  * @param {RequestReporter} reporter
  * @returns {HandlerResult}
  */
-export function rateLimit(response, nthTry, reporter) {
+export function rateLimit(response, nthTry) {
   const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
 
   let millisecondsToWait = isNaN(rateLimitReset)
@@ -145,14 +153,7 @@ export function rateLimit(response, nthTry, reporter) {
     return {};
   }
 
-  if (reporter) {
-    reporter(
-      response.url,
-      `Rate limit reached: waiting for ${millisecondsToWait / 1000}s`
-    );
-  }
-
-  return { repeatAfter: millisecondsToWait };
+  return { repeatAfter: millisecondsToWait, message: `Rate limit reached: waiting for ${millisecondsToWait / 1000}s` };
 }
 
 /**
@@ -161,14 +162,15 @@ export function rateLimit(response, nthTry, reporter) {
 const retryTimes = [100, 5000, 30000, 60000];
 
 /**
- * try 3 times with a delay
+ * Try 3 times with a delay.
  * @param {Object} response
  * @param {number} nthTry
  * @returns
  */
 function retryAction(response, nthTry) {
   if (nthTry <= 3) {
-    return { repeatAfter: retryTimes[nthTry] };
+    const repeatAfter = retryTimes[nthTry];
+    return { repeatAfter, message: `Waiting for ${repeatAfter / 1000}s` };
   }
 
   return {};
