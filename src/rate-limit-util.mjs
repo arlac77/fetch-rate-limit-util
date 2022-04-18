@@ -161,8 +161,9 @@ const retryTimes = [100, 5000, 30000, 60000];
  * @returns
  */
 function retryAction(response, nthTry) {
-  if (nthTry <= 3) {
-    const repeatAfter = retryTimes[nthTry];
+  const repeatAfter = retryTimes[nthTry];
+
+  if (repeatAfter) {
     return { repeatAfter, message: `Waiting for ${repeatAfter / 1000}s` };
   }
 
