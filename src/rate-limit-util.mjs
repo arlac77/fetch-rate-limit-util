@@ -6,9 +6,10 @@
  */
 
 /**
+ * Function to provide progress report.
  * @typedef {Function} RequestReporter
  * @property {String} url to be requested
- * @property {String|Error} status result og the last request
+ * @property {String|Error} status result of the last request
  * @property {number} nthTry how often have we retried
  */
 
@@ -24,7 +25,6 @@ async function wait(url, actionResult, reporter)
       setTimeout(resolve, actionResult.repeatAfter)
     );
   }
-
 }
 
 /**
@@ -66,13 +66,6 @@ export async function stateActionHandler(
         url = actionResult.url;
       }
     } catch (e) {
-      /*
-        type: 'system',
-        errno: 'ERR_STREAM_PREMATURE_CLOSE',
-        code: 'ERR_STREAM_PREMATURE_CLOSE',
-        erroredSysCall: undefined
-       */
-
       const action = stateActions[e.errno] || defaultAction;
       actionResult = action(undefined, nthTry);
 
