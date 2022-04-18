@@ -41,7 +41,7 @@ export async function stateActionHandler(
   fetch,
   url,
   fetchOptions,
-  postprocess = response => response,
+  postprocess,
   stateActions = defaultStateActions,
   reporter
 ) {
@@ -57,7 +57,7 @@ export async function stateActionHandler(
       }
 
       if (actionResult.repeatAfter === undefined) {
-        return await postprocess(response);
+        return postprocess ? await postprocess(response) : response;
       }
 
       await wait(url, actionResult, reporter);
