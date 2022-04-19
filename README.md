@@ -75,7 +75,7 @@ Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Sta
 *   `fetch` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** executes the fetch operation
 *   `url` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [URL](https://developer.mozilla.org/docs/Web/API/URL/URL))** 
 *   `fetchOptions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-*   `postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)**  (optional, default `response=>response`)
+*   `postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
 *   `stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `defaultStateActions`)
 *   `reporter` **[RequestReporter](#requestreporter)** 
 
