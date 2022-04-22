@@ -21,8 +21,7 @@ dwdt.title = (
   rateLimitRemaining,
   nthTry,
   expected
-) =>
-  `waitDecide ${millisecondsToWait} ${rateLimitRemaining} ${nthTry}`.trim();
+) => `waitDecide ${millisecondsToWait} ${rateLimitRemaining} ${nthTry}`.trim();
 
-  test(dwdt, 1, 0, 1, 1 + MIN_WAIT_MSECS);
-  test(dwdt, 1, 0, 99, -1);
+test(dwdt, 1, 0, 1, 1 + MIN_WAIT_MSECS);
+test(dwdt, 1, 0, 99, -1);
