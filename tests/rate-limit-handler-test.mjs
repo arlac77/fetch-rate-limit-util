@@ -19,6 +19,7 @@ rlt.title = (providedTitle, headers, nthRetry, expected) =>
 test(rlt, {}, 1, { repeatAfter: 10000, message: "Rate limit reached: waiting for 10s" });
 test(rlt, {}, 6, {});
 test(rlt, { "x-ratelimit-reset": "abc" }, 1, { repeatAfter: 10000, message: "Rate limit reached: waiting for 10s" });
+test(rlt, { "retry-after": "5" }, 1, { repeatAfter: 5000, message: "Rate limit reached: waiting for 5s" });
 
 test(
   rlt,

@@ -13,17 +13,13 @@
  * @property {number} nthTry how often have we retried
  */
 
-
-async function wait(url, actionResult, reporter)
-{
+async function wait(url, actionResult, reporter) {
   if (actionResult.repeatAfter > 0) {
     if (reporter && actionResult.message) {
       reporter(url, actionResult.message);
     }
 
-    await new Promise(resolve =>
-      setTimeout(resolve, actionResult.repeatAfter)
-    );
+    await new Promise(resolve => setTimeout(resolve, actionResult.repeatAfter));
   }
 }
 
@@ -129,24 +125,34 @@ export function waitDecide(
  * @returns {HandlerResult}
  */
 export function rateLimit(response, nthTry) {
-  const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
+  let repeatAfter;
 
-  let millisecondsToWait = isNaN(rateLimitReset)
-    ? 0
-    : new Date(rateLimitReset * 1000).getTime() - Date.now();
+  const ra = response.headers.get("retry-after");
+  if (ra && ra.match(/^\d+$/)) {
+    repeatAfter = parseInt(ra) * 1000;
+  } else {
+    const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
 
-  millisecondsToWait = waitDecide(
-    millisecondsToWait,
-    parseInt(response.headers.get("x-ratelimit-remaining")),
-    nthTry,
-    response
-  );
+    repeatAfter = isNaN(rateLimitReset)
+      ? 0
+      : new Date(rateLimitReset * 1000).getTime() - Date.now();
 
-  if (millisecondsToWait <= 0) {
+      repeatAfter = waitDecide(
+        repeatAfter,
+      parseInt(response.headers.get("x-ratelimit-remaining")),
+      nthTry,
+      response
+    );
+  }
+
+  if (repeatAfter <= 0) {
     return {};
   }
 
-  return { repeatAfter: millisecondsToWait, message: `Rate limit reached: waiting for ${millisecondsToWait / 1000}s` };
+  return {
+    repeatAfter,
+    message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
+  };
 }
 
 /**

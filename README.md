@@ -17,7 +17,8 @@ Waits and retry after rate limit rest time has reached.
 *   [auth0 API](https://auth0.com/docs/policies/rate-limit-policy)
 *   [github API](https://developer.github.com/v3/#rate-limiting)
 *   [Zalando API](https://opensource.zalando.com/restful-api-guidelines/#153)
-
+*   [Retry-After](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After)
+  
 ```js
 import { rateLimitHandler } from "fetch-rate-limit-util";
 
@@ -30,21 +31,26 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 #### Table of Contents
 
-*   [HandlerResult](#handlerresult)
-    *   [Properties](#properties)
-*   [RequestReporter](#requestreporter)
-    *   [Properties](#properties-1)
-*   [stateActionHandler](#stateactionhandler)
-    *   [Parameters](#parameters)
-*   [MIN_WAIT_MSECS](#min_wait_msecs)
-*   [MAX_RETRIES](#max_retries)
-*   [waitDecide](#waitdecide)
-    *   [Parameters](#parameters-1)
-*   [rateLimit](#ratelimit)
-    *   [Parameters](#parameters-2)
-*   [retryTimes](#retrytimes)
-*   [retryAction](#retryaction)
-    *   [Parameters](#parameters-3)
+- [fetch-rate-limit-util](#fetch-rate-limit-util)
+- [API](#api)
+      - [Table of Contents](#table-of-contents)
+    - [HandlerResult](#handlerresult)
+      - [Properties](#properties)
+    - [RequestReporter](#requestreporter)
+      - [Properties](#properties-1)
+    - [stateActionHandler](#stateactionhandler)
+      - [Parameters](#parameters)
+    - [MIN_WAIT_MSECS](#min_wait_msecs)
+    - [MAX_RETRIES](#max_retries)
+    - [waitDecide](#waitdecide)
+      - [Parameters](#parameters-1)
+    - [rateLimit](#ratelimit)
+      - [Parameters](#parameters-2)
+    - [retryTimes](#retrytimes)
+    - [retryAction](#retryaction)
+      - [Parameters](#parameters-3)
+- [install](#install)
+- [license](#license)
 
 ### HandlerResult
 
