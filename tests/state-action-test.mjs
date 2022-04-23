@@ -21,8 +21,8 @@ async function sat(t, request, responses, expected) {
       request.url,
       { ...request.options },
       async response => {
-        if (usedResponse && usedResponse.postProcessingException) {
-          throw usedResponse.postProcessingException;
+        if (request.postprocess) {
+          await request.postprocess();
         }
 
         return response;
@@ -71,9 +71,25 @@ test(
 
 test(
   sat,
-  REQUEST,
-  [{ postProcessingException: new Error("Premature close"), status: 200 }],
+  {
+    ...REQUEST,
+    postprocess: async () => {
+      throw new Error("Premature close");
+    }
+  },
+  [{ status: 200 }],
   new Error("Premature close")
+);
+
+test(
+  "JSON parse error",
+  sat,
+  {
+    ...REQUEST,
+    postprocess: async () => JSON.parse("{ xxx")
+  },
+  [{ status: 200 }],
+  new Error("Unexpected token x in JSON at position 2")
 );
 
 test(
