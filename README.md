@@ -18,7 +18,7 @@ Waits and retry after rate limit rest time has reached.
 *   [github API](https://developer.github.com/v3/#rate-limiting)
 *   [Zalando API](https://opensource.zalando.com/restful-api-guidelines/#153)
 *   [Retry-After](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After)
-  
+
 ```js
 import { rateLimitHandler } from "fetch-rate-limit-util";
 
@@ -31,26 +31,22 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 #### Table of Contents
 
-- [fetch-rate-limit-util](#fetch-rate-limit-util)
-- [API](#api)
-      - [Table of Contents](#table-of-contents)
-    - [HandlerResult](#handlerresult)
-      - [Properties](#properties)
-    - [RequestReporter](#requestreporter)
-      - [Properties](#properties-1)
-    - [stateActionHandler](#stateactionhandler)
-      - [Parameters](#parameters)
-    - [MIN_WAIT_MSECS](#min_wait_msecs)
-    - [MAX_RETRIES](#max_retries)
-    - [waitDecide](#waitdecide)
-      - [Parameters](#parameters-1)
-    - [rateLimit](#ratelimit)
-      - [Parameters](#parameters-2)
-    - [retryTimes](#retrytimes)
-    - [retryAction](#retryaction)
-      - [Parameters](#parameters-3)
-- [install](#install)
-- [license](#license)
+*   [HandlerResult](#handlerresult)
+    *   [Properties](#properties)
+*   [RequestReporter](#requestreporter)
+    *   [Parameters](#parameters)
+    *   [Properties](#properties-1)
+*   [stateActionHandler](#stateactionhandler)
+    *   [Parameters](#parameters-1)
+*   [MIN_WAIT_MSECS](#min_wait_msecs)
+*   [MAX_RETRIES](#max_retries)
+*   [waitDecide](#waitdecide)
+    *   [Parameters](#parameters-2)
+*   [rateLimit](#ratelimit)
+    *   [Parameters](#parameters-3)
+*   [retryTimes](#retrytimes)
+*   [retryAction](#retryaction)
+    *   [Parameters](#parameters-4)
 
 ### HandlerResult
 
@@ -67,6 +63,10 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 Function to provide progress report.
 
 Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)
+
+#### Parameters
+
+*   `fetchOptions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
 #### Properties
 
