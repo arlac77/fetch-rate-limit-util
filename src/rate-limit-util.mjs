@@ -9,14 +9,15 @@
  * Function to provide progress report.
  * @typedef {Function} RequestReporter
  * @property {String} url to be requested
+ * @param {Object} fetchOptions
  * @property {String|Error} status result of the last request
  * @property {number} nthTry how often have we retried
  */
 
-async function wait(url, actionResult, reporter) {
+async function wait(url, fetchOptions, actionResult, reporter) {
   if (actionResult.repeatAfter > 0) {
     if (reporter && actionResult.message) {
-      reporter(url, actionResult.message);
+      reporter(url, fetchOptions.method || "GET", actionResult.message);
     }
 
     await new Promise(resolve => setTimeout(resolve, actionResult.repeatAfter));
@@ -49,14 +50,14 @@ export async function stateActionHandler(
       actionResult = action(response, nthTry);
 
       if (reporter) {
-        reporter(url, response.status, nthTry);
+        reporter(url, fetchOptions.method || "GET", response.status, nthTry);
       }
 
       if (actionResult.repeatAfter === undefined) {
         return postprocess ? await postprocess(response) : response;
       }
 
-      await wait(url, actionResult, reporter);
+      await wait(url, fetchOptions, actionResult, reporter);
 
       if (actionResult.url) {
         url = actionResult.url;
@@ -73,10 +74,10 @@ export async function stateActionHandler(
       }
 
       if (reporter) {
-        reporter(url, e, nthTry);
+        reporter(url, fetchOptions.method || "GET", e, nthTry);
       }
 
-      await wait(url, actionResult, reporter);
+      await wait(url, fetchOptions, actionResult, reporter);
     }
   }
 
@@ -137,8 +138,8 @@ export function rateLimit(response, nthTry) {
       ? 0
       : new Date(rateLimitReset * 1000).getTime() - Date.now();
 
-      repeatAfter = waitDecide(
-        repeatAfter,
+    repeatAfter = waitDecide(
+      repeatAfter,
       parseInt(response.headers.get("x-ratelimit-remaining")),
       nthTry,
       response
