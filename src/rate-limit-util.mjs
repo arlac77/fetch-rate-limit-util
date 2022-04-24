@@ -87,33 +87,12 @@ export async function stateActionHandler(
 /**
  * Minimum wait time in msecs.
  */
-export const MIN_WAIT_MSECS = 10000;
+export const MIN_WAIT_MSECS = 1000;
 
 /**
  * Max # of wait retries.
  */
 export const MAX_RETRIES = 4;
-
-/**
- * Decide about the time to wait for a retry.
- * - only retry {@link MAX_RETRIES} times
- * - when waiting wait at least {@link MIN_WAIT_MSECS}
- * @param {Integer} millisecondsToWait # of milliseconds to wait before retry
- * @param {Integer} rateLimitRemaining parsed from "x-ratelimit-remaining" header
- * @param {Integer} nthTry how often have we retried the request already
- * @param {Object} response as returned from fetch
- * @return {Integer} milliseconds to wait for next try or < 0 to deliver current response
- */
-export function waitDecide(
-  millisecondsToWait,
-  rateLimitRemaining,
-  nthTry,
-  response
-) {
-  if (nthTry > MAX_RETRIES) return -1;
-
-  return millisecondsToWait + MIN_WAIT_MSECS;
-}
 
 /**
  * Waits and retries after rate limit reset time has reached.
@@ -128,32 +107,33 @@ export function waitDecide(
 export function rateLimit(response, nthTry) {
   let repeatAfter;
 
-  const ra = response.headers.get("retry-after");
-  if (ra && ra.match(/^\d+$/)) {
-    repeatAfter = parseInt(ra) * 1000;
-  } else {
-    const rateLimitReset = parseInt(response.headers.get("x-ratelimit-reset"));
-
-    repeatAfter = isNaN(rateLimitReset)
-      ? 0
-      : new Date(rateLimitReset * 1000).getTime() - Date.now();
-
-    repeatAfter = waitDecide(
-      repeatAfter,
-      parseInt(response.headers.get("x-ratelimit-remaining")),
-      nthTry,
-      response
-    );
-  }
-
-  if (repeatAfter <= 0) {
-    return {};
-  }
-
-  return {
-    repeatAfter,
-    message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
+  const headers = {
+    "retry-after": value =>
+      value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
+    "x-ratelimit-reset": value => {
+      const rateLimitReset = parseInt(value);
+      return isNaN(rateLimitReset)
+        ? MIN_WAIT_MSECS
+        : new Date(rateLimitReset * 1000).getTime() - Date.now();
+    }
   };
+
+  for (const [key, f] of Object.entries(headers)) {
+    const value = response.headers.get(key);
+    if (value !== undefined) {
+      let repeatAfter = f(value);
+      if (repeatAfter) {
+        if(repeatAfter < MIN_WAIT_MSECS) {
+          repeatAfter = MIN_WAIT_MSECS;
+        }
+        return {
+          repeatAfter,
+          message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
+        };
+      }
+    }
+  }
+  return {};
 }
 
 /**
