@@ -179,6 +179,7 @@ export const defaultStateActions = {
   403: rateLimitHandler,
   404: defaultHandler, // NOT Found
   408: retryHandler, // Request timeout
+  409: retryHandler, // Conflict
   422: defaultHandler, // UNPROCESSABLE ENTITY
   423: retryHandler,
   429: rateLimitHandler,
