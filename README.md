@@ -20,9 +20,9 @@ Waits and retry after rate limit rest time has reached.
 *   [Retry-After](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After)
 
 ```js
-import { rateLimitHandler } from "fetch-rate-limit-util";
+import { stateActionHandler } from "fetch-rate-limit-util";
 
-const response = rateLimitHandler( () => fetch(someURL));
+const response = await stateActionHandler(fetch, someURL);
 ```
 
 # API
@@ -31,22 +31,27 @@ const response = rateLimitHandler( () => fetch(someURL));
 
 #### Table of Contents
 
-*   [HandlerResult](#handlerresult)
-    *   [Properties](#properties)
-*   [RequestReporter](#requestreporter)
-    *   [Parameters](#parameters)
-    *   [Properties](#properties-1)
-*   [stateActionHandler](#stateactionhandler)
-    *   [Parameters](#parameters-1)
-*   [MIN_WAIT_MSECS](#min_wait_msecs)
-*   [MAX_RETRIES](#max_retries)
-*   [waitDecide](#waitdecide)
-    *   [Parameters](#parameters-2)
-*   [rateLimit](#ratelimit)
-    *   [Parameters](#parameters-3)
-*   [retryTimes](#retrytimes)
-*   [retryAction](#retryaction)
-    *   [Parameters](#parameters-4)
+- [fetch-rate-limit-util](#fetch-rate-limit-util)
+- [API](#api)
+      - [Table of Contents](#table-of-contents)
+    - [HandlerResult](#handlerresult)
+      - [Properties](#properties)
+    - [RequestReporter](#requestreporter)
+      - [Parameters](#parameters)
+      - [Properties](#properties-1)
+    - [stateActionHandler](#stateactionhandler)
+      - [Parameters](#parameters-1)
+    - [MIN_WAIT_MSECS](#min_wait_msecs)
+    - [MAX_RETRIES](#max_retries)
+    - [waitDecide](#waitdecide)
+      - [Parameters](#parameters-2)
+    - [rateLimit](#ratelimit)
+      - [Parameters](#parameters-3)
+    - [retryTimes](#retrytimes)
+    - [retryHandler](#retryhandler)
+      - [Parameters](#parameters-4)
+- [install](#install)
+- [license](#license)
 
 ### HandlerResult
 
@@ -135,7 +140,7 @@ Returns **[HandlerResult](#handlerresult)**
 
 Increasing delay for each retry
 
-### retryAction
+### retryHandler
 
 Try 3 times with a delay.
 

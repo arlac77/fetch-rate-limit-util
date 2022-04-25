@@ -46,7 +46,7 @@ export async function stateActionHandler(
     let actionResult;
     try {
       const response = await fetch(url, fetchOptions);
-      const action = stateActions[response.status] || defaultAction;
+      const action = stateActions[response.status] || defaultHandler;
       actionResult = action(response, nthTry);
 
       if (reporter) {
@@ -63,7 +63,7 @@ export async function stateActionHandler(
         url = actionResult.url;
       }
     } catch (e) {
-      const action = stateActions[e.errno] || defaultAction;
+      const action = stateActions[e.errno] || defaultHandler;
       actionResult = action(undefined, nthTry);
 
       if (
@@ -90,7 +90,7 @@ export async function stateActionHandler(
 export const MIN_WAIT_MSECS = 1000;
 
 /**
- * Max # of wait retries.
+ * Max # of retries.
  */
 export const MAX_RETRIES = 4;
 
@@ -104,9 +104,7 @@ export const MAX_RETRIES = 4;
  * @param {RequestReporter} reporter
  * @returns {HandlerResult}
  */
-export function rateLimit(response, nthTry) {
-  let repeatAfter;
-
+export function rateLimitHandler(response, nthTry) {
   const headers = {
     "retry-after": value =>
       value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
@@ -123,7 +121,7 @@ export function rateLimit(response, nthTry) {
     if (value !== undefined) {
       let repeatAfter = f(value);
       if (repeatAfter) {
-        if(repeatAfter < MIN_WAIT_MSECS) {
+        if (repeatAfter < MIN_WAIT_MSECS) {
           repeatAfter = MIN_WAIT_MSECS;
         }
         return {
@@ -139,7 +137,7 @@ export function rateLimit(response, nthTry) {
 /**
  * Increasing delay for each retry
  */
-const retryTimes = [100, 5000, 30000, 60000];
+const retryTimes = [100, 10000, 30000, 60000];
 
 /**
  * Try 3 times with a delay.
@@ -147,7 +145,7 @@ const retryTimes = [100, 5000, 30000, 60000];
  * @param {number} nthTry
  * @returns
  */
-function retryAction(response, nthTry) {
+function retryHandler(response, nthTry) {
   const repeatAfter = retryTimes[nthTry];
 
   if (repeatAfter) {
@@ -157,39 +155,39 @@ function retryAction(response, nthTry) {
   return {};
 }
 
-function redirectAction(response, nthTry) {
+function redirectHandler(response, nthTry) {
   if (nthTry <= 3) {
     return { repeatAfter: 0, url: response.headers.get("location") };
   }
   return {};
 }
 
-function defaultAction(response, nthTry) {
+function defaultHandler(response, nthTry) {
   return {};
 }
 
 export const defaultStateActions = {
-  "-1": retryAction,
-  0: retryAction,
-  201: defaultAction, // Created
-  301: redirectAction,
-  302: redirectAction,
-  307: redirectAction,
-  308: redirectAction,
-  400: retryAction,
-  401: defaultAction,
-  403: rateLimit,
-  404: defaultAction, // NOT Found
-  408: retryAction, // Request timeout
-  422: defaultAction, // UNPROCESSABLE ENTITY
-  423: retryAction,
-  429: rateLimit,
-  444: retryAction,
-  451: defaultAction,
-  500: retryAction,
-  502: retryAction,
-  504: retryAction,
-  599: retryAction,
+  "-1": retryHandler,
+  0: retryHandler,
+  201: defaultHandler, // Created
+  301: redirectHandler,
+  302: redirectHandler,
+  307: redirectHandler,
+  308: redirectHandler,
+  400: retryHandler,
+  401: defaultHandler,
+  403: rateLimitHandler,
+  404: defaultHandler, // NOT Found
+  408: retryHandler, // Request timeout
+  422: defaultHandler, // UNPROCESSABLE ENTITY
+  423: retryHandler,
+  429: rateLimitHandler,
+  444: retryHandler,
+  451: defaultHandler,
+  500: retryHandler,
+  502: retryHandler,
+  504: retryHandler,
+  599: retryHandler,
 
-  ERR_STREAM_PREMATURE_CLOSE: retryAction
+  ERR_STREAM_PREMATURE_CLOSE: retryHandler
 };
