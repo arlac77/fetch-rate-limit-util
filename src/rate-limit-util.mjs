@@ -78,7 +78,7 @@ export async function stateActionHandler(
     }
   }
 
-  throw new Error(`${url}: Max retry count reached (${MAX_RETRIES})`);
+  throw new Error(`${url},${fetchOptions.method || "GET"}: Max retry count reached (${MAX_RETRIES})`);
 }
 
 /**

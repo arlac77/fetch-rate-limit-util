@@ -66,7 +66,7 @@ test(
     { status: 500 },
     { status: 500 }
   ],
-  new Error(`http://somewhere/: Max retry count reached (${MAX_RETRIES})`)
+  new Error(`http://somewhere/, GET: Max retry count reached (${MAX_RETRIES})`)
 );
 
 test(
