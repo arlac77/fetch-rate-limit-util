@@ -115,7 +115,7 @@ export function rateLimitHandler(response, nthTry) {
 
   for (const [key, f] of Object.entries(headers)) {
     const value = response.headers.get(key);
-    if (value !== undefined) {
+    if (value != null && value !== undefined) {
       let repeatAfter = f(value);
       if (repeatAfter) {
         if (repeatAfter < MIN_WAIT_MSECS) {

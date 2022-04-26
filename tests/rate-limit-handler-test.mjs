@@ -23,6 +23,15 @@ test(rlt, { "x-ratelimit-reset": "abc" }, 1, {
   repeatAfter: 1000,
   message: "Rate limit reached: waiting for 1s"
 });
+
+test(rlt, { "retry-after": null }, 1, {
+  postprocess: true
+});
+
+test(rlt, { "retry-after": undefined }, 1, {
+  postprocess: true
+});
+
 test(rlt, { "retry-after": "5" }, 1, {
   postprocess: false,
   repeatAfter: 5000,
