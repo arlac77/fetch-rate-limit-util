@@ -17,12 +17,14 @@ rlt.title = (providedTitle, headers, nthRetry, expected) =>
   `rate limit ${JSON.stringify(headers)} ${nthRetry}`.trim();
 
 //test(rlt, {}, 1, { repeatAfter: 1000, message: "Rate limit reached: waiting for 1s" });
-test(rlt, {}, 6, {});
+test(rlt, {}, 6, { postprocess: true });
 test(rlt, { "x-ratelimit-reset": "abc" }, 1, {
+  postprocess: false,
   repeatAfter: 1000,
   message: "Rate limit reached: waiting for 1s"
 });
 test(rlt, { "retry-after": "5" }, 1, {
+  postprocess: false,
   repeatAfter: 5000,
   message: "Rate limit reached: waiting for 5s"
 });
@@ -33,7 +35,11 @@ test(
     "x-ratelimit-reset": Date.now() / 1000 + 1
   },
   1,
-  { repeatAfter: 1000, message: "Rate limit reached: waiting for 1s" }
+  {
+    postprocess: false,
+    repeatAfter: 1000,
+    message: "Rate limit reached: waiting for 1s"
+  }
 );
 
 /*

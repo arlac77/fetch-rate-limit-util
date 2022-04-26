@@ -53,7 +53,7 @@ export async function stateActionHandler(
         reporter(url, fetchOptions.method || "GET", response.status, nthTry);
       }
 
-      if (actionResult.repeatAfter === undefined) {
+      if (actionResult.postprocess) {
         return postprocess ? await postprocess(response) : response;
       }
 
@@ -66,10 +66,7 @@ export async function stateActionHandler(
       const action = stateActions[e.errno] || defaultHandler;
       actionResult = action(undefined, nthTry);
 
-      if (
-        actionResult === undefined ||
-        actionResult.repeatAfter === undefined
-      ) {
+      if (actionResult.repeatAfter === undefined) {
         throw e;
       }
 
@@ -126,12 +123,13 @@ export function rateLimitHandler(response, nthTry) {
         }
         return {
           repeatAfter,
+          postprocess: false,
           message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
         };
       }
     }
   }
-  return {};
+  return { postprocess: true };
 }
 
 /**
@@ -149,21 +147,33 @@ function retryHandler(response, nthTry) {
   const repeatAfter = retryTimes[nthTry];
 
   if (repeatAfter) {
-    return { repeatAfter, message: `Waiting for ${repeatAfter / 1000}s` };
+    return {
+      postprocess: false,
+      repeatAfter,
+      message: `Waiting for ${repeatAfter / 1000}s`
+    };
   }
 
-  return {};
+  return { postprocess: false };
 }
 
 function redirectHandler(response, nthTry) {
   if (nthTry <= 3) {
-    return { repeatAfter: 0, url: response.headers.get("location") };
+    return {
+      postprocess: false,
+      repeatAfter: 0,
+      url: response.headers.get("location")
+    };
   }
-  return {};
+  return { postprocess: false };
 }
 
 function defaultHandler(response, nthTry) {
-  return {};
+  return { postprocess: true };
+}
+
+function errorHandler(response, nthTry) {
+  return { postprocess: false };
 }
 
 export const defaultStateActions = {
@@ -174,7 +184,7 @@ export const defaultStateActions = {
   302: redirectHandler,
   307: redirectHandler,
   308: redirectHandler,
-  400: retryHandler,
+  400: errorHandler, // Bad Request
   401: defaultHandler,
   403: rateLimitHandler,
   404: defaultHandler, // NOT Found

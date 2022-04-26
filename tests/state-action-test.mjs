@@ -28,7 +28,7 @@ async function sat(t, request, responses, expected) {
         return response;
       },
       undefined,
-      console.log
+      () => {} // console.log
     );
 
     t.truthy(response);
@@ -104,10 +104,6 @@ test(
     url: "https://new.domain/"
   }
 );
-
-test.skip(sat, REQUEST, [{ status: 500 }, { status: 500 }], {
-  status: 500
-});
 
 test(
   sat,
