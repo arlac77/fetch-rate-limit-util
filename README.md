@@ -31,25 +31,20 @@ const response = await stateActionHandler(fetch, someURL);
 
 ### Table of Contents
 
-- [fetch-rate-limit-util](#fetch-rate-limit-util)
-- [API](#api)
-    - [Table of Contents](#table-of-contents)
-  - [HandlerResult](#handlerresult)
-    - [Properties](#properties)
-  - [RequestReporter](#requestreporter)
-    - [Parameters](#parameters)
-    - [Properties](#properties-1)
-  - [stateActionHandler](#stateactionhandler)
-    - [Parameters](#parameters-1)
-  - [MIN_WAIT_MSECS](#min_wait_msecs)
-  - [MAX_RETRIES](#max_retries)
-  - [rateLimit](#ratelimit)
-    - [Parameters](#parameters-2)
-  - [retryTimes](#retrytimes)
-    - [retryHandler](#retryhandler)
-    - [Parameters](#parameters-3)
-- [install](#install)
-- [license](#license)
+*   [HandlerResult](#handlerresult)
+    *   [Properties](#properties)
+*   [RequestReporter](#requestreporter)
+    *   [Parameters](#parameters)
+    *   [Properties](#properties-1)
+*   [stateActionHandler](#stateactionhandler)
+    *   [Parameters](#parameters-1)
+*   [MIN_WAIT_MSECS](#min_wait_msecs)
+*   [MAX_RETRIES](#max_retries)
+*   [rateLimitHandler](#ratelimithandler)
+    *   [Parameters](#parameters-2)
+*   [retryTimes](#retrytimes)
+*   [retryHandler](#retryhandler)
+    *   [Parameters](#parameters-3)
 
 ## HandlerResult
 
@@ -98,11 +93,11 @@ Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 ## MAX_RETRIES
 
-Max # of wait retries.
+Max # of retries.
 
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
-## rateLimit
+## rateLimitHandler
 
 *   **See**: <https://auth0.com/docs/policies/rate-limit-policy>
 *   **See**: <https://developer.github.com/v3/#rate-limiting>
@@ -122,7 +117,7 @@ Returns **[HandlerResult](#handlerresult)**
 
 Increasing delay for each retry
 
-### retryHandler
+## retryHandler
 
 Try 3 times with a delay.
 
