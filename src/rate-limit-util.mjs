@@ -67,18 +67,24 @@ export async function stateActionHandler(
         url = actionResult.url;
       }
     } catch (e) {
-      const action = stateActions[e.errno] || defaultHandler;
-      actionResult = action(undefined, nthTry);
-
-      if (actionResult.repeatAfter === undefined) {
-        throw e;
-      }
-
       if (reporter) {
         reporter(url, fetchOptions.method || "GET", e, nthTry);
       }
 
-      await wait(url, fetchOptions, actionResult, reporter);
+      const action = stateActions[e.errno];
+
+      if (action) {
+        actionResult = action(undefined, nthTry);
+
+        if (actionResult.repeatAfter === undefined) {
+          throw e;
+        }
+
+        await wait(url, fetchOptions, actionResult, reporter);
+      }
+      else {
+        throw e;
+      }
     }
   }
 
