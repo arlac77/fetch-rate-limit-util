@@ -54,6 +54,7 @@ sat.title = (providedTitle = "state action", request, responses, expected) =>
 const REQUEST = { url: "http://somewhere/" };
 
 test(sat, REQUEST, [{ status: 200 }], { status: 200 });
+test(sat, REQUEST, [{ status: 400 },{ status: 400 },{ status: 400 },{ status: 400 },{ status: 400 },{ status: 400 }], { status: 400 });
 
 test(
   sat,

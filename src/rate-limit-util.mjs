@@ -25,7 +25,7 @@ async function wait(url, fetchOptions, actionResult, reporter) {
 }
 
 /**
- *
+ * Executes fetch operation and handles response.
  * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
  * @param {Object} fetchOptions
@@ -53,8 +53,12 @@ export async function stateActionHandler(
         reporter(url, fetchOptions.method || "GET", response.status, nthTry);
       }
 
-      if (actionResult.postprocess) {
-        return postprocess ? await postprocess(response) : response;
+      if (actionResult.done) {
+        if (actionResult.postprocess && postprocess) {
+          return await postprocess(response);
+        }
+
+        return response;
       }
 
       await wait(url, fetchOptions, actionResult, reporter);
@@ -78,7 +82,11 @@ export async function stateActionHandler(
     }
   }
 
-  throw new Error(`${url},${fetchOptions.method || "GET"}: Max retry count reached (${MAX_RETRIES})`);
+  throw new Error(
+    `${url},${
+      fetchOptions.method || "GET"
+    }: Max retry count reached (${MAX_RETRIES})`
+  );
 }
 
 /**
@@ -123,13 +131,14 @@ export function rateLimitHandler(response, nthTry) {
         }
         return {
           repeatAfter,
+          done: false,
           postprocess: false,
           message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
         };
       }
     }
   }
-  return { postprocess: true };
+  return { done: true, postprocess: true };
 }
 
 /**
@@ -154,7 +163,7 @@ function retryHandler(response, nthTry) {
     };
   }
 
-  return { postprocess: false };
+  return { done: false, postprocess: false };
 }
 
 function redirectHandler(response, nthTry) {
@@ -165,15 +174,15 @@ function redirectHandler(response, nthTry) {
       url: response.headers.get("location")
     };
   }
-  return { postprocess: false };
+  return { done: false, postprocess: false };
 }
 
 function defaultHandler(response, nthTry) {
-  return { postprocess: true };
+  return { done: true, postprocess: true };
 }
 
 function errorHandler(response, nthTry) {
-  return { postprocess: false };
+  return { done: true, postprocess: false };
 }
 
 export const defaultStateActions = {
