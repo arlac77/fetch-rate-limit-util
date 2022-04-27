@@ -74,6 +74,8 @@ Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Sta
 
 ## stateActionHandler
 
+Executes fetch operation and handles response.
+
 ### Parameters
 
 *   `fetch` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** executes the fetch operation
