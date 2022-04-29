@@ -81,8 +81,7 @@ export async function stateActionHandler(
         }
 
         await wait(url, fetchOptions, actionResult, reporter);
-      }
-      else {
+      } else {
         throw e;
       }
     }
