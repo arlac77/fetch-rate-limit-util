@@ -158,7 +158,7 @@ const retryTimes = [100, 10000, 30000, 60000];
  * @param {number} nthTry
  * @returns
  */
-function retryHandler(response, nthTry) {
+export function retryHandler(response, nthTry) {
   const repeatAfter = retryTimes[nthTry];
 
   if (repeatAfter) {
@@ -172,7 +172,7 @@ function retryHandler(response, nthTry) {
   return { done: false, postprocess: false };
 }
 
-function redirectHandler(response, nthTry) {
+export function redirectHandler(response, nthTry) {
   if (nthTry <= 3) {
     return {
       postprocess: false,
@@ -183,11 +183,11 @@ function redirectHandler(response, nthTry) {
   return { done: false, postprocess: false };
 }
 
-function defaultHandler(response, nthTry) {
+export function defaultHandler(response, nthTry) {
   return { done: true, postprocess: true };
 }
 
-function errorHandler(response, nthTry) {
+export function errorHandler(response, nthTry) {
   return { done: true, postprocess: false };
 }
 
