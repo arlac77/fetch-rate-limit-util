@@ -2,12 +2,12 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![minified size](https://badgen.net/bundlephobia/min/fetch-rate-limit-util)](https://bundlephobia.com/result?p=fetch-rate-limit-util)
 [![downloads](http://img.shields.io/npm/dm/fetch-rate-limit-util.svg?style=flat-square)](https://npmjs.org/package/fetch-rate-limit-util)
-[![GitHub Issues](https://img.shields.io/github/issues/arlac77/fetch-rate-limit-util.svg?style=flat-square)](https://github.com/arlac77/fetch-rate-limit-util/issues)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Farlac77%2Ffetch-rate-limit-util%2Fbadge\&style=flat)](https://actions-badge.atrox.dev/arlac77/fetch-rate-limit-util/goto)
+[![GitHub Issues](https://img.shields.io/github/issues/fetch-rate-limit-util/fetch-rate-limit-util.svg?style=flat-square)](https://github.com/fetch-rate-limit-util/fetch-rate-limit-util/issues)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Ffetch-rate-limit-util%2Ffetch-rate-limit-util%2Fbadge\&style=flat)](https://actions-badge.atrox.dev/fetch-rate-limit-util/fetch-rate-limit-util/goto)
 [![Styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-[![Known Vulnerabilities](https://snyk.io/test/github/arlac77/fetch-rate-limit-util/badge.svg)](https://snyk.io/test/github/arlac77/fetch-rate-limit-util)
-[![Coverage Status](https://coveralls.io/repos/arlac77/fetch-rate-limit-util/badge.svg)](https://coveralls.io/github/arlac77/fetch-rate-limit-util)
+[![Known Vulnerabilities](https://snyk.io/test/github/fetch-rate-limit-util/fetch-rate-limit-util/badge.svg)](https://snyk.io/test/github/fetch-rate-limit-util/fetch-rate-limit-util)
+[![Coverage Status](https://coveralls.io/repos/fetch-rate-limit-util/fetch-rate-limit-util/badge.svg)](https://coveralls.io/github/fetch-rate-limit-util/fetch-rate-limit-util)
 
 # fetch-rate-limit-util
 
