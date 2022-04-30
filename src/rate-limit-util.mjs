@@ -143,7 +143,7 @@ export function rateLimitHandler(response, nthTry) {
       }
     }
   }
-  return { done: true, postprocess: true };
+  return { done: true, postprocess: response.ok };
 }
 
 /**
@@ -183,7 +183,7 @@ export function redirectHandler(response, nthTry) {
 }
 
 export function defaultHandler(response, nthTry) {
-  return { done: true, postprocess: true };
+  return { done: true, postprocess: response.ok };
 }
 
 export function errorHandler(response, nthTry) {
