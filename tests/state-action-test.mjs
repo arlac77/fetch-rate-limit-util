@@ -53,17 +53,17 @@ sat.title = (providedTitle = "state action", request, responses, expected) =>
 
 const REQUEST = { url: "http://somewhere/" };
 
-test(sat, REQUEST, [{ status: 200 }], { status: 200 });
+test(sat, REQUEST, [{ status: 200, ok: true }], { status: 200, ok: true });
 test(
   sat,
   REQUEST,
   [
-    { status: 400 },
-    { status: 400 },
-    { status: 400 },
-    { status: 400 },
-    { status: 400 },
-    { status: 400 }
+    { status: 400, ok: false },
+    { status: 400, ok: false },
+    { status: 400, ok: false },
+    { status: 400, ok: false },
+    { status: 400, ok: false },
+    { status: 400, ok: false }
   ],
   { status: 400 }
 );
@@ -72,12 +72,12 @@ test(
   sat,
   REQUEST,
   [
-    { status: 500 },
-    { status: 500 },
-    { status: 500 },
-    { status: 500 },
-    { status: 500 },
-    { status: 500 }
+    { status: 500, ok: false },
+    { status: 500, ok: false },
+    { status: 500, ok: false },
+    { status: 500, ok: false },
+    { status: 500, ok: false },
+    { status: 500, ok: false }
   ],
   new Error(`http://somewhere/,GET: Max retry count reached (${MAX_RETRIES})`)
 );
@@ -90,7 +90,7 @@ test(
       throw new Error("Premature close");
     }
   },
-  [{ status: 200 }],
+  [{ status: 200, ok: true }],
   new Error("Premature close")
 );
 
@@ -101,7 +101,7 @@ test(
     ...REQUEST,
     postprocess: async () => JSON.parse("{ xxx")
   },
-  [{ status: 200 }],
+  [{ status: 200, ok: true }],
   new Error("Unexpected token x in JSON at position 2")
 );
 
@@ -109,8 +109,8 @@ test(
   sat,
   REQUEST,
   [
-    { status: 301, headers: { location: "https://new.domain/" } },
-    { status: 200 }
+    { status: 301, ok: true, headers: { location: "https://new.domain/" } },
+    { status: 200, ok: true }
   ],
   {
     status: 200,
@@ -124,6 +124,7 @@ test(
   [
     {
       status: 429,
+      ok: false,
       headers: { "x-ratelimit-reset": Date.now() / 1000 + 0.1 }
     },
     { status: 200 }
