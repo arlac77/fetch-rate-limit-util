@@ -3,7 +3,8 @@ import { rateLimitHandler } from "fetch-rate-limit-util";
 
 async function rlt(t, headers, nthRetry, expected) {
   const response = {
-    headers: { get: name => headers[name] }
+    headers: { get: name => headers[name] },
+    ok: true
   };
 
   if (typeof expected === "function") {
