@@ -6,7 +6,7 @@ async function sat(t, request, responses, expected) {
   let usedResponse;
 
   try {
-    const response = await stateActionHandler(
+    const {response} = await stateActionHandler(
       async function (url, options) {
         usedResponse = responses[iter] || { status: -1 };
         iter++;
@@ -22,10 +22,10 @@ async function sat(t, request, responses, expected) {
       { ...request.options },
       async response => {
         if (request.postprocess) {
-          await request.postprocess();
+          return await request.postprocess();
         }
 
-        return response;
+        return { response };
       },
       undefined,
       () => {} // console.log

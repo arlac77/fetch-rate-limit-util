@@ -54,8 +54,11 @@ export async function stateActionHandler(
       }
 
       if (actionResult.done) {
-        if (actionResult.postprocess && postprocess) {
-          return await postprocess(response);
+        if (postprocess) {
+          if (actionResult.postprocess) {
+            return await postprocess(response);
+          }
+          return { response };
         }
 
         return response;
