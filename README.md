@@ -45,6 +45,10 @@ const response = await stateActionHandler(fetch, someURL);
 *   [retryTimes](#retrytimes)
 *   [retryHandler](#retryhandler)
     *   [Parameters](#parameters-3)
+*   [defaultHandler](#defaulthandler)
+    *   [Parameters](#parameters-4)
+*   [errorHandler](#errorhandler)
+    *   [Parameters](#parameters-5)
 
 ## HandlerResult
 
@@ -111,7 +115,6 @@ Waits and retries after rate limit reset time has reached.
 
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
-*   `reporter` **[RequestReporter](#requestreporter)** 
 
 Returns **[HandlerResult](#handlerresult)** 
 
@@ -127,6 +130,26 @@ Try 3 times with a delay.
 
 *   `response` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+
+Returns **[HandlerResult](#handlerresult)** 
+
+## defaultHandler
+
+Postprocessing is response is ok
+
+### Parameters
+
+*   `response`  
+*   `nthTry`  
+
+## errorHandler
+
+No postprocessing
+
+### Parameters
+
+*   `response`  
+*   `nthTry`  
 
 # install
 
