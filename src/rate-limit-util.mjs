@@ -114,7 +114,6 @@ export const MAX_RETRIES = 4;
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
  * @param {Response} response
  * @param {number} nthTry
- * @param {RequestReporter} reporter
  * @returns {HandlerResult}
  */
 export function rateLimitHandler(response, nthTry) {
@@ -158,7 +157,7 @@ const retryTimes = [100, 10000, 30000, 60000];
  * Try 3 times with a delay.
  * @param {Object} response
  * @param {number} nthTry
- * @returns
+ * @returns {HandlerResult}
  */
 export function retryHandler(response, nthTry) {
   const repeatAfter = retryTimes[nthTry];
@@ -185,10 +184,17 @@ export function redirectHandler(response, nthTry) {
   return { done: false, postprocess: false };
 }
 
+/**
+ * Postprocessing is response is ok
+ */
+
 export function defaultHandler(response, nthTry) {
   return { done: true, postprocess: response.ok };
 }
 
+/**
+ * No postprocessing
+ */
 export function errorHandler(response, nthTry) {
   return { done: true, postprocess: false };
 }
@@ -199,6 +205,7 @@ export const defaultStateActions = {
   201: defaultHandler, // Created
   301: redirectHandler,
   302: redirectHandler,
+  304: defaultHandler, // Not Modified
   307: redirectHandler,
   308: redirectHandler,
   400: errorHandler, // Bad Request
@@ -212,9 +219,10 @@ export const defaultStateActions = {
   429: rateLimitHandler,
   444: retryHandler,
   451: defaultHandler,
-  500: retryHandler,
-  502: retryHandler,
-  504: retryHandler,
+  500: retryHandler, // Internal Server Error
+  502: retryHandler, // Bad Gateway
+  503: retryHandler, // Service Unavailable
+  504: retryHandler, // Gateway Timeout
   599: retryHandler,
 
   ERR_STREAM_PREMATURE_CLOSE: retryHandler
