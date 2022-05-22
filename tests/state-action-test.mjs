@@ -8,12 +8,12 @@ async function sat(t, request, responses, expected) {
   try {
     const {response} = await stateActionHandler(
       async function (url, options) {
-        usedResponse = responses[iter] || { status: -1 };
+        usedResponse = responses[iter] || { status: -1, headers: [] };
         iter++;
 
         return {
           url,
-          headers: { get: name => usedResponse.headers[name] },
+          headers: { get: name => usedResponse.headers && usedResponse.headers[name] },
           status: usedResponse.status,
           ok: true
         };
