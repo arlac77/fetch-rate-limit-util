@@ -11,7 +11,8 @@
 
 # fetch-rate-limit-util
 
-Handle fetch errors and rate limits.
+Handle fetch errors and rate limits and caching.
+
 Waits and retry after rate limit rest time has reached.
 
 *   [auth0 API](https://auth0.com/docs/policies/rate-limit-policy)
@@ -31,24 +32,29 @@ const response = await stateActionHandler(fetch, someURL);
 
 ### Table of Contents
 
-*   [HandlerResult](#handlerresult)
-    *   [Properties](#properties)
-*   [RequestReporter](#requestreporter)
-    *   [Parameters](#parameters)
-    *   [Properties](#properties-1)
-*   [stateActionHandler](#stateactionhandler)
-    *   [Parameters](#parameters-1)
-*   [MIN_WAIT_MSECS](#min_wait_msecs)
-*   [MAX_RETRIES](#max_retries)
-*   [rateLimitHandler](#ratelimithandler)
-    *   [Parameters](#parameters-2)
-*   [retryTimes](#retrytimes)
-*   [retryHandler](#retryhandler)
-    *   [Parameters](#parameters-3)
-*   [defaultHandler](#defaulthandler)
-    *   [Parameters](#parameters-4)
-*   [errorHandler](#errorhandler)
-    *   [Parameters](#parameters-5)
+- [fetch-rate-limit-util](#fetch-rate-limit-util)
+- [API](#api)
+    - [Table of Contents](#table-of-contents)
+  - [HandlerResult](#handlerresult)
+    - [Properties](#properties)
+  - [RequestReporter](#requestreporter)
+    - [Parameters](#parameters)
+    - [Properties](#properties-1)
+  - [stateActionHandler](#stateactionhandler)
+    - [Parameters](#parameters-1)
+  - [MIN_WAIT_MSECS](#min_wait_msecs)
+  - [MAX_RETRIES](#max_retries)
+  - [rateLimitHandler](#ratelimithandler)
+    - [Parameters](#parameters-2)
+  - [retryTimes](#retrytimes)
+  - [retryHandler](#retryhandler)
+    - [Parameters](#parameters-3)
+  - [defaultHandler](#defaulthandler)
+    - [Parameters](#parameters-4)
+  - [errorHandler](#errorhandler)
+    - [Parameters](#parameters-5)
+- [install](#install)
+- [license](#license)
 
 ## HandlerResult
 
