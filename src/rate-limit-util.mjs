@@ -1,3 +1,5 @@
+import { ETagDummyCache } from "./etag-dummy-cache.mjs";
+
 /**
  * @typedef {Object} HandlerResult
  * @property {number} [retries] max number of retries that should be executed
@@ -9,6 +11,7 @@
  * Function to provide progress report.
  * @typedef {Function} RequestReporter
  * @property {String} url to be requested
+ * @property {String} method http method name
  * @param {Object} fetchOptions
  * @property {String|Error} status result of the last request
  * @property {number} nthTry how often have we retried
@@ -37,11 +40,18 @@ async function wait(url, fetchOptions, actionResult, reporter) {
 export async function stateActionHandler(
   fetch,
   url,
-  fetchOptions,
+  fetchOptions = {},
   postprocess,
   stateActions = defaultStateActions,
   reporter
 ) {
+
+  if(fetchOptions.headers === undefined) {
+    fetchOptions.headers = {};
+  }
+
+  stateActions.cache.header(url);
+
   for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
     let actionResult;
     try {
@@ -189,6 +199,11 @@ export function redirectHandler(response, nthTry) {
  */
 
 export function defaultHandler(response, nthTry) {
+
+  if (response.headers.get('etag')) {
+    //this.cache.store(url, response.headers.get('etag'), json);
+  }
+
   return { done: true, postprocess: response.ok };
 }
 
@@ -199,13 +214,25 @@ export function errorHandler(response, nthTry) {
   return { done: true, postprocess: false };
 }
 
+/**
+ * provide cached data
+ * @param {*} response 
+ * @param {*} nthTry 
+ * @returns 
+ */
+export function cacheHandler(response, nthTry) {
+  json = this.cache.data(url);
+
+  return { done: true, postprocess: response.ok };
+}
+
 export const defaultStateActions = {
   "-1": retryHandler,
   0: retryHandler,
   201: defaultHandler, // Created
   301: redirectHandler,
   302: redirectHandler,
-  304: defaultHandler, // Not Modified
+  304: cacheHandler, // Not Modified cache ?
   307: redirectHandler,
   308: redirectHandler,
   400: errorHandler, // Bad Request
@@ -225,5 +252,7 @@ export const defaultStateActions = {
   504: retryHandler, // Gateway Timeout
   599: retryHandler,
 
-  ERR_STREAM_PREMATURE_CLOSE: retryHandler
+  ERR_STREAM_PREMATURE_CLOSE: retryHandler,
+
+  cache: new ETagDummyCache()
 };
