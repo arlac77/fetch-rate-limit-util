@@ -3,7 +3,7 @@ import { ETagDummyCache } from "./etag-dummy-cache.mjs";
 /**
  * @typedef {Object} HandlerResult
  * @property {number} [retries] max number of retries that should be executed
- * @property {repeastAfter} [number] of milliseconds to wait befor next try
+ * @property {repeatAfter} [number] of milliseconds to wait befor next try
  * @property {string} message to report
  */
 
@@ -57,7 +57,7 @@ export async function stateActionHandler(
     try {
       const response = await fetch(url, fetchOptions);
       const action = stateActions[response.status] || defaultHandler;
-      actionResult = action(response, nthTry);
+      actionResult = action(stateActions, response, nthTry);
 
       if (reporter) {
         reporter(url, fetchOptions.method || "GET", response.status, nthTry);
@@ -87,7 +87,7 @@ export async function stateActionHandler(
       const action = stateActions[e.errno];
 
       if (action) {
-        actionResult = action(undefined, nthTry);
+        actionResult = action(stateActions, undefined, nthTry);
 
         if (actionResult.repeatAfter === undefined) {
           throw e;
@@ -126,7 +126,7 @@ export const MAX_RETRIES = 4;
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function rateLimitHandler(response, nthTry) {
+export function rateLimitHandler(stateActions, response, nthTry) {
   const headers = {
     "retry-after": value =>
       value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
@@ -169,7 +169,7 @@ const retryTimes = [100, 10000, 30000, 60000];
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function retryHandler(response, nthTry) {
+export function retryHandler(stateActions, response, nthTry) {
   const repeatAfter = retryTimes[nthTry];
 
   if (repeatAfter) {
@@ -183,7 +183,7 @@ export function retryHandler(response, nthTry) {
   return { done: false, postprocess: false };
 }
 
-export function redirectHandler(response, nthTry) {
+export function redirectHandler(stateActions, response, nthTry) {
   if (nthTry <= 3) {
     return {
       postprocess: false,
@@ -195,13 +195,13 @@ export function redirectHandler(response, nthTry) {
 }
 
 /**
- * Postprocessing is response is ok
+ * Postprocessing if response is ok
  */
 
-export function defaultHandler(response, nthTry) {
-
-  if (response.headers.get('etag')) {
-    //this.cache.store(url, response.headers.get('etag'), json);
+export function defaultHandler(stateActions, response, nthTry) {
+  const etag = response.headers.get('etag');
+  if (etag) {
+    stateActions.cache.store(url, etag, undefined);
   }
 
   return { done: true, postprocess: response.ok };
@@ -210,7 +210,7 @@ export function defaultHandler(response, nthTry) {
 /**
  * No postprocessing
  */
-export function errorHandler(response, nthTry) {
+export function errorHandler(stateActions, response, nthTry) {
   return { done: true, postprocess: false };
 }
 
@@ -220,8 +220,8 @@ export function errorHandler(response, nthTry) {
  * @param {*} nthTry 
  * @returns 
  */
-export function cacheHandler(response, nthTry) {
-  json = this.cache.data(url);
+export function cacheHandler(stateActions, response, nthTry) {
+  json = stateActions.cache.data(url);
 
   return { done: true, postprocess: response.ok };
 }

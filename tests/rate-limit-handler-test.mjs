@@ -2,15 +2,16 @@ import test from "ava";
 import { rateLimitHandler } from "fetch-rate-limit-util";
 
 async function rlt(t, headers, nthRetry, expected) {
+  const actionsHandlers = undefined;
   const response = {
     headers: { get: name => headers[name] },
     ok: true
   };
 
   if (typeof expected === "function") {
-    t.true(expected(rateLimitHandler(response, nthRetry)));
+    t.true(expected(rateLimitHandler(actionsHandlers, response, nthRetry)));
   } else {
-    t.deepEqual(expected, rateLimitHandler(response, nthRetry));
+    t.deepEqual(expected, rateLimitHandler(actionsHandlers, response, nthRetry));
   }
 }
 
