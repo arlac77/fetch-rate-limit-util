@@ -1,12 +1,8 @@
-
-
 /**
  * dummy cache impl
  */
 export class ETagDummyCache {
-  header() {
-    return {};
-  }
-  data() {}
-  store() {}
+  addHeaders(url, headers) {}
+  loadResponse(url) {}
+  storeResponse(response) {}
 }
