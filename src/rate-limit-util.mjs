@@ -45,12 +45,17 @@ export async function stateActionHandler(
   stateActions = defaultStateActions,
   reporter
 ) {
-
-  if(fetchOptions.headers === undefined) {
+  if (fetchOptions.headers === undefined) {
     fetchOptions.headers = {};
   }
 
-  stateActions.cache.header(url);
+  if (fetchOptions.method === undefined) {
+    fetchOptions.method = "GET";
+  }
+
+  if (fetchOptions.method === "GET" || fetchOptions.method === "HEAD") {
+    await stateActions.cache.addHeaders(url, fetchOptions.headers);
+  }
 
   for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
     let actionResult;
@@ -60,7 +65,7 @@ export async function stateActionHandler(
       actionResult = action(stateActions, response, nthTry);
 
       if (reporter) {
-        reporter(url, fetchOptions.method || "GET", response.status, nthTry);
+        reporter(url, fetchOptions.method, response.status, nthTry);
       }
 
       if (actionResult.done) {
@@ -81,7 +86,7 @@ export async function stateActionHandler(
       }
     } catch (e) {
       if (reporter) {
-        reporter(url, fetchOptions.method || "GET", e, nthTry);
+        reporter(url, fetchOptions.method, e, nthTry);
       }
 
       const action = stateActions[e.errno];
@@ -101,9 +106,7 @@ export async function stateActionHandler(
   }
 
   throw new Error(
-    `${url},${
-      fetchOptions.method || "GET"
-    }: Max retry count reached (${MAX_RETRIES})`
+    `${url},${fetchOptions.method}: Max retry count reached (${MAX_RETRIES})`
   );
 }
 
@@ -155,7 +158,7 @@ export function rateLimitHandler(stateActions, response, nthTry) {
       }
     }
   }
-  return { done: true, postprocess: response.ok };
+  return { done: true, response, postprocess: response.ok };
 }
 
 /**
@@ -180,7 +183,7 @@ export function retryHandler(stateActions, response, nthTry) {
     };
   }
 
-  return { done: false, postprocess: false };
+  return { done: false, response, postprocess: false };
 }
 
 export function redirectHandler(stateActions, response, nthTry) {
@@ -191,7 +194,7 @@ export function redirectHandler(stateActions, response, nthTry) {
       url: response.headers.get("location")
     };
   }
-  return { done: false, postprocess: false };
+  return { done: false, response, postprocess: false };
 }
 
 /**
@@ -199,31 +202,25 @@ export function redirectHandler(stateActions, response, nthTry) {
  */
 
 export function defaultHandler(stateActions, response, nthTry) {
-  const etag = response.headers.get('etag');
-  if (etag) {
-    stateActions.cache.store(url, etag, undefined);
-  }
-
-  return { done: true, postprocess: response.ok };
+  stateActions.cache.storeResponse(response);
+  return { done: true, response, postprocess: response.ok };
 }
 
 /**
  * No postprocessing
  */
 export function errorHandler(stateActions, response, nthTry) {
-  return { done: true, postprocess: false };
+  return { done: true, response, postprocess: false };
 }
 
 /**
  * provide cached data
- * @param {*} response 
- * @param {*} nthTry 
- * @returns 
+ * @param {*} response
+ * @param {*} nthTry
+ * @returns
  */
 export function cacheHandler(stateActions, response, nthTry) {
-  json = stateActions.cache.data(url);
-
-  return { done: true, postprocess: response.ok };
+  return { done: true, postprocess: response.ok, response: stateActions.cache.loadResponse(response.url) };
 }
 
 export const defaultStateActions = {

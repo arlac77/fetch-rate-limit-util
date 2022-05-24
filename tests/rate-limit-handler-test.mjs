@@ -11,7 +11,10 @@ async function rlt(t, headers, nthRetry, expected) {
   if (typeof expected === "function") {
     t.true(expected(rateLimitHandler(actionsHandlers, response, nthRetry)));
   } else {
-    t.deepEqual(expected, rateLimitHandler(actionsHandlers, response, nthRetry));
+    const res = rateLimitHandler(actionsHandlers, response, nthRetry);
+    delete res.response;
+
+    t.deepEqual(expected, res);
   }
 }
 
