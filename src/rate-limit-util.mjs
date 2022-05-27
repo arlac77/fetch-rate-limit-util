@@ -5,6 +5,9 @@ import { ETagDummyCache } from "./etag-dummy-cache.mjs";
  * @property {number} [retries] max number of retries that should be executed
  * @property {repeatAfter} [number] of milliseconds to wait befor next try
  * @property {string} message to report
+ * @property {boolean} done op is finished return
+ * @property {Response} response
+ * @property {boolean} postprocess exec postprocess
  */
 
 /**
@@ -12,15 +15,15 @@ import { ETagDummyCache } from "./etag-dummy-cache.mjs";
  * @typedef {Function} RequestReporter
  * @property {String} url to be requested
  * @property {String} method http method name
- * @param {Object} fetchOptions
+ * @param {Object} options
  * @property {String|Error} status result of the last request
  * @property {number} nthTry how often have we retried
  */
 
-async function wait(url, fetchOptions, actionResult, reporter) {
+async function wait(url, options, actionResult, reporter) {
   if (actionResult.repeatAfter > 0) {
     if (reporter && actionResult.message) {
-      reporter(url, fetchOptions.method || "GET", actionResult.message);
+      reporter(url, options.method || "GET", actionResult.message);
     }
 
     await new Promise(resolve => setTimeout(resolve, actionResult.repeatAfter));
@@ -31,7 +34,7 @@ async function wait(url, fetchOptions, actionResult, reporter) {
  * Executes fetch operation and handles response.
  * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
- * @param {Object} fetchOptions
+ * @param {Object} options
  * @param {Function} postprocess
  * @param {Object} stateActions
  * @param {RequestReporter} reporter
@@ -40,32 +43,32 @@ async function wait(url, fetchOptions, actionResult, reporter) {
 export async function stateActionHandler(
   fetch,
   url,
-  fetchOptions = {},
+  options = {},
   postprocess,
   stateActions = defaultStateActions,
   reporter
 ) {
-  if (fetchOptions.headers === undefined) {
-    fetchOptions.headers = {};
+  if (options.headers === undefined) {
+    options.headers = {};
   }
 
-  if (fetchOptions.method === undefined) {
-    fetchOptions.method = "GET";
+  if (options.method === undefined) {
+    options.method = "GET";
   }
 
-  if (fetchOptions.method === "GET" || fetchOptions.method === "HEAD") {
-    await stateActions.cache.addHeaders(url, fetchOptions.headers);
+  if (options.method === "GET" || options.method === "HEAD") {
+    await stateActions.cache.addHeaders(url, options.headers);
   }
 
   for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
     let actionResult;
     try {
-      const response = await fetch(url, fetchOptions);
+      const response = await fetch(url, options);
       const action = stateActions[response.status] || defaultHandler;
       actionResult = action(stateActions, response, nthTry);
 
       if (reporter) {
-        reporter(url, fetchOptions.method, response.status, nthTry);
+        reporter(url, options.method, response.status, nthTry);
       }
 
       if (actionResult.done) {
@@ -79,14 +82,14 @@ export async function stateActionHandler(
         return response;
       }
 
-      await wait(url, fetchOptions, actionResult, reporter);
+      await wait(url, options, actionResult, reporter);
 
       if (actionResult.url) {
         url = actionResult.url;
       }
     } catch (e) {
       if (reporter) {
-        reporter(url, fetchOptions.method, e, nthTry);
+        reporter(url, options.method, e, nthTry);
       }
 
       const action = stateActions[e.errno];
@@ -98,7 +101,7 @@ export async function stateActionHandler(
           throw e;
         }
 
-        await wait(url, fetchOptions, actionResult, reporter);
+        await wait(url, options, actionResult, reporter);
       } else {
         throw e;
       }
@@ -106,7 +109,7 @@ export async function stateActionHandler(
   }
 
   throw new Error(
-    `${url},${fetchOptions.method}: Max retry count reached (${MAX_RETRIES})`
+    `${url},${options.method}: Max retry count reached (${MAX_RETRIES})`
   );
 }
 
