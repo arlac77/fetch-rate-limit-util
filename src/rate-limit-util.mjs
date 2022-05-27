@@ -40,11 +40,7 @@ async function wait(url, options, actionResult, reporter) {
  * @param {Object} options.stateActions
  * @return {Promise<Response>} from fetch
  */
-export async function stateActionHandler(
-  fetch,
-  url,
-  options = {},
-) {
+export async function stateActionHandler(fetch, url, options = {}) {
   const reporter = options.reporter;
   const postprocess = options.postprocess;
   const stateActions = options.stateActions || defaultStateActions;
@@ -57,8 +53,11 @@ export async function stateActionHandler(
     options.method = "GET";
   }
 
-  if (options.method === "GET" || options.method === "HEAD") {
-    await stateActions.cache.addHeaders(url, options.headers);
+  if (
+    (options.method === "GET" || options.method === "HEAD") &&
+    options.cache
+  ) {
+    await options.cache.addHeaders(url, options.headers);
   }
 
   for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
@@ -66,7 +65,7 @@ export async function stateActionHandler(
     try {
       const response = await fetch(url, options);
       const action = stateActions[response.status] || defaultHandler;
-      actionResult = action(stateActions, response, nthTry);
+      actionResult = action(options, response, nthTry);
 
       if (reporter) {
         reporter(url, options.method, response.status, nthTry);
@@ -96,7 +95,7 @@ export async function stateActionHandler(
       const action = stateActions[e.errno];
 
       if (action) {
-        actionResult = action(stateActions, undefined, nthTry);
+        actionResult = action(options, undefined, nthTry);
 
         if (actionResult.repeatAfter === undefined) {
           throw e;
@@ -133,7 +132,7 @@ export const MAX_RETRIES = 4;
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function rateLimitHandler(stateActions, response, nthTry) {
+export function rateLimitHandler(options, response, nthTry) {
   const headers = {
     "retry-after": value =>
       value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
@@ -176,7 +175,7 @@ const retryTimes = [100, 10000, 30000, 60000];
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function retryHandler(stateActions, response, nthTry) {
+export function retryHandler(options, response, nthTry) {
   const repeatAfter = retryTimes[nthTry];
 
   if (repeatAfter) {
@@ -190,7 +189,7 @@ export function retryHandler(stateActions, response, nthTry) {
   return { done: false, response, postprocess: false };
 }
 
-export function redirectHandler(stateActions, response, nthTry) {
+export function redirectHandler(options, response, nthTry) {
   if (nthTry <= 3) {
     return {
       postprocess: false,
@@ -205,15 +204,17 @@ export function redirectHandler(stateActions, response, nthTry) {
  * Postprocessing if response is ok
  */
 
-export function defaultHandler(stateActions, response, nthTry) {
-  stateActions.cache.storeResponse(response);
+export function defaultHandler(options, response, nthTry) {
+  if (options.cache) {
+    options.cache.storeResponse(response);
+  }
   return { done: true, response, postprocess: response.ok };
 }
 
 /**
  * No postprocessing
  */
-export function errorHandler(stateActions, response, nthTry) {
+export function errorHandler(options, response, nthTry) {
   return { done: true, response, postprocess: false };
 }
 
@@ -223,8 +224,12 @@ export function errorHandler(stateActions, response, nthTry) {
  * @param {*} nthTry
  * @returns
  */
-export function cacheHandler(stateActions, response, nthTry) {
-  return { done: true, postprocess: response.ok, response: stateActions.cache.loadResponse(response.url) };
+export function cacheHandler(options, response, nthTry) {
+  return {
+    done: true,
+    postprocess: response.ok,
+    response: options.cache.loadResponse(response.url)
+  };
 }
 
 export const defaultStateActions = {
@@ -253,7 +258,5 @@ export const defaultStateActions = {
   504: retryHandler, // Gateway Timeout
   599: retryHandler,
 
-  ERR_STREAM_PREMATURE_CLOSE: retryHandler,
-
-  cache: new ETagDummyCache()
+  ERR_STREAM_PREMATURE_CLOSE: retryHandler
 };
