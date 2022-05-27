@@ -35,19 +35,20 @@ async function wait(url, options, actionResult, reporter) {
  * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
  * @param {Object} options
- * @param {Function} postprocess
- * @param {Object} stateActions
- * @param {RequestReporter} reporter
+ * @param {RequestReporter} options.reporter
+ * @param {Function} options.postprocess
+ * @param {Object} options.stateActions
  * @return {Promise<Response>} from fetch
  */
 export async function stateActionHandler(
   fetch,
   url,
   options = {},
-  postprocess,
-  stateActions = defaultStateActions,
-  reporter
 ) {
+  const reporter = options.reporter;
+  const postprocess = options.postprocess;
+  const stateActions = options.stateActions || defaultStateActions;
+
   if (options.headers === undefined) {
     options.headers = {};
   }

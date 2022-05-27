@@ -6,6 +6,14 @@ async function sat(t, request, responses, expected) {
   let usedResponse;
 
   try {
+    const postprocess = async response => {
+      if (request.postprocess) {
+        return await request.postprocess();
+      }
+
+      return { response };
+    };
+
     const {response} = await stateActionHandler(
       async function (url, options) {
         usedResponse = responses[iter] || { status: -1, headers: [] };
@@ -19,16 +27,7 @@ async function sat(t, request, responses, expected) {
         };
       },
       request.url,
-      { ...request.options },
-      async response => {
-        if (request.postprocess) {
-          return await request.postprocess();
-        }
-
-        return { response };
-      },
-      undefined,
-      () => {} // console.log
+      { ...request.options, postprocess }
     );
 
     t.truthy(response);
