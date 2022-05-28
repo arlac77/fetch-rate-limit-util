@@ -2,7 +2,7 @@ import { ETagDummyCache } from "./etag-dummy-cache.mjs";
 
 /**
  * @typedef {Object} HandlerResult
- * @property {number} [retries] max number of retries that should be executed
+ * @property {URL} [url] what to fetch next
  * @property {repeatAfter} [number] of milliseconds to wait befor next try
  * @property {string} message to report
  * @property {boolean} done op is finished return
@@ -20,10 +20,10 @@ import { ETagDummyCache } from "./etag-dummy-cache.mjs";
  * @property {number} nthTry how often have we retried
  */
 
-async function wait(url, options, actionResult, reporter) {
+async function wait(url, options, actionResult) {
   if (actionResult.repeatAfter > 0) {
-    if (reporter && actionResult.message) {
-      reporter(url, options.method || "GET", actionResult.message);
+    if (options.reporter && actionResult.message) {
+      options.reporter(url, options.method || "GET", actionResult.message);
     }
 
     await new Promise(resolve => setTimeout(resolve, actionResult.repeatAfter));
@@ -82,7 +82,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
         return response;
       }
 
-      await wait(url, options, actionResult, reporter);
+      await wait(url, options, actionResult);
 
       if (actionResult.url) {
         url = actionResult.url;
@@ -101,7 +101,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
           throw e;
         }
 
-        await wait(url, options, actionResult, reporter);
+        await wait(url, options, actionResult);
       } else {
         throw e;
       }
