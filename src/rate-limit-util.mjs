@@ -1,4 +1,3 @@
-import { ETagDummyCache } from "./etag-dummy-cache.mjs";
 
 /**
  * @typedef {Object} HandlerResult
