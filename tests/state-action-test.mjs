@@ -14,14 +14,16 @@ async function sat(t, request, responses, expected) {
       return { response };
     };
 
-    const {response} = await stateActionHandler(
+    const { response } = await stateActionHandler(
       async function (url, options) {
         usedResponse = responses[iter] || { status: -1, headers: [] };
         iter++;
 
         return {
           url,
-          headers: { get: name => usedResponse.headers && usedResponse.headers[name] },
+          headers: {
+            get: name => usedResponse.headers && usedResponse.headers[name]
+          },
           status: usedResponse.status,
           ok: true
         };
@@ -33,6 +35,10 @@ async function sat(t, request, responses, expected) {
     t.truthy(response);
 
     t.is(response.status, expected.status);
+
+   /* if (expected.body) {
+      t.is(response.body, expected.body);
+    }*/
 
     if (expected.url) {
       t.is(response.url, expected.url);
@@ -52,7 +58,11 @@ sat.title = (providedTitle = "state action", request, responses, expected) =>
 
 const REQUEST = { url: "http://somewhere/" };
 
-test(sat, REQUEST, [{ status: 200, ok: true }], { status: 200, ok: true });
+test(sat, REQUEST, [{ status: 200, ok: true, body: "a" }], {
+  status: 200,
+  ok: true,
+  body: "a"
+});
 test(
   sat,
   REQUEST,
@@ -126,7 +136,7 @@ test(
       ok: false,
       headers: { "x-ratelimit-reset": Date.now() / 1000 + 0.1 }
     },
-    { status: 200 }
+    { status: 200, ok: true, body: "abc" }
   ],
-  { status: 200 }
+  { status: 200, ok: true, body: "abc" }
 );
