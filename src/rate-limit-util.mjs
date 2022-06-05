@@ -19,13 +19,13 @@
  * @property {number} nthTry how often have we retried
  */
 
-async function wait(url, options, actionResult) {
-  if (actionResult.repeatAfter > 0) {
-    if (options.reporter && actionResult.message) {
-      options.reporter(url, options.method || "GET", actionResult.message);
+async function wait(url, options, result) {
+  if (result.repeatAfter > 0) {
+    if (options.reporter && result.message) {
+      options.reporter(url, options.method || "GET", result.message);
     }
 
-    await new Promise(resolve => setTimeout(resolve, actionResult.repeatAfter));
+    await new Promise(resolve => setTimeout(resolve, result.repeatAfter));
   }
 }
 
@@ -60,19 +60,20 @@ export async function stateActionHandler(fetch, url, options = {}) {
   }
 
   for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
-    let actionResult;
+    let result;
     try {
-      const response = await fetch(url, options);
+      let response = await fetch(url, options);
       const action = stateActions[response.status] || defaultHandler;
-      actionResult = action(options, response, nthTry);
+      result = action(options, response, nthTry);
+      response = result.response;
 
       if (reporter) {
         reporter(url, options.method, response.status, nthTry);
       }
 
-      if (actionResult.done) {
+      if (result.done) {
         if (postprocess) {
-          if (actionResult.postprocess) {
+          if (result.postprocess) {
             return await postprocess(response);
           }
           return { response };
@@ -81,10 +82,10 @@ export async function stateActionHandler(fetch, url, options = {}) {
         return response;
       }
 
-      await wait(url, options, actionResult);
+      await wait(url, options, result);
 
-      if (actionResult.url) {
-        url = actionResult.url;
+      if (result.url) {
+        url = result.url;
       }
     } catch (e) {
       if (reporter) {
@@ -94,13 +95,13 @@ export async function stateActionHandler(fetch, url, options = {}) {
       const action = stateActions[e.errno];
 
       if (action) {
-        actionResult = action(options, undefined, nthTry);
+        result = action(options, undefined, nthTry);
 
-        if (actionResult.repeatAfter === undefined) {
+        if (result.repeatAfter === undefined) {
           throw e;
         }
 
-        await wait(url, options, actionResult);
+        await wait(url, options, result);
       } else {
         throw e;
       }
