@@ -10,9 +10,9 @@
   },
   "description": "handle fetch errors and rate limits",
   "keywords": [
+    "etag",
     "fetch",
-    "rate-limit",
-    "etag"
+    "rate-limit"
   ],
   "contributors": [
     {
