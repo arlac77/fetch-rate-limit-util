@@ -156,6 +156,7 @@ export function rateLimitHandler(options, response, nthTry) {
           repeatAfter,
           done: false,
           postprocess: false,
+          response,
           message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
         };
       }
