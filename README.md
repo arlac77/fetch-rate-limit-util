@@ -32,29 +32,26 @@ const response = await stateActionHandler(fetch, someURL);
 
 ### Table of Contents
 
-- [fetch-rate-limit-util](#fetch-rate-limit-util)
-- [API](#api)
-    - [Table of Contents](#table-of-contents)
-  - [HandlerResult](#handlerresult)
-    - [Properties](#properties)
-  - [RequestReporter](#requestreporter)
-    - [Parameters](#parameters)
-    - [Properties](#properties-1)
-  - [stateActionHandler](#stateactionhandler)
-    - [Parameters](#parameters-1)
-  - [MIN_WAIT_MSECS](#min_wait_msecs)
-  - [MAX_RETRIES](#max_retries)
-  - [rateLimitHandler](#ratelimithandler)
-    - [Parameters](#parameters-2)
-  - [retryTimes](#retrytimes)
-  - [retryHandler](#retryhandler)
-    - [Parameters](#parameters-3)
-  - [defaultHandler](#defaulthandler)
-    - [Parameters](#parameters-4)
-  - [errorHandler](#errorhandler)
-    - [Parameters](#parameters-5)
-- [install](#install)
-- [license](#license)
+*   [HandlerResult](#handlerresult)
+    *   [Properties](#properties)
+*   [RequestReporter](#requestreporter)
+    *   [Parameters](#parameters)
+    *   [Properties](#properties-1)
+*   [stateActionHandler](#stateactionhandler)
+    *   [Parameters](#parameters-1)
+*   [MIN_WAIT_MSECS](#min_wait_msecs)
+*   [MAX_RETRIES](#max_retries)
+*   [rateLimitHandler](#ratelimithandler)
+    *   [Parameters](#parameters-2)
+*   [retryTimes](#retrytimes)
+*   [retryHandler](#retryhandler)
+    *   [Parameters](#parameters-3)
+*   [defaultHandler](#defaulthandler)
+    *   [Parameters](#parameters-4)
+*   [errorHandler](#errorhandler)
+    *   [Parameters](#parameters-5)
+*   [cacheHandler](#cachehandler)
+    *   [Parameters](#parameters-6)
 
 ## HandlerResult
 
@@ -62,9 +59,12 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 ### Properties
 
-*   `retries` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** max number of retries that should be executed
-*   `number` **repeastAfter?** of milliseconds to wait befor next try
+*   `url` **[URL](https://developer.mozilla.org/docs/Web/API/URL/URL)?** what to fetch next
+*   `number` **repeatAfter?** of milliseconds to wait befor next try
 *   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to report
+*   `done` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** op is finished return
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
+*   `postprocess` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** exec postprocess
 
 ## RequestReporter
 
@@ -74,11 +74,12 @@ Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Sta
 
 ### Parameters
 
-*   `fetchOptions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
 ### Properties
 
 *   `url` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to be requested
+*   `method` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** http method name
 *   `status` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error))** result of the last request
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** how often have we retried
 
@@ -90,10 +91,11 @@ Executes fetch operation and handles response.
 
 *   `fetch` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** executes the fetch operation
 *   `url` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [URL](https://developer.mozilla.org/docs/Web/API/URL/URL))** 
-*   `fetchOptions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-*   `postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
-*   `stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `defaultStateActions`)
-*   `reporter` **[RequestReporter](#requestreporter)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+
+    *   `options.reporter` **[RequestReporter](#requestreporter)** 
+    *   `options.postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+    *   `options.stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)>** from fetch
 
@@ -119,6 +121,7 @@ Waits and retries after rate limit reset time has reached.
 
 ### Parameters
 
+*   `options`  
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
@@ -134,6 +137,7 @@ Try 3 times with a delay.
 
 ### Parameters
 
+*   `options`  
 *   `response` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
@@ -141,10 +145,11 @@ Returns **[HandlerResult](#handlerresult)**
 
 ## defaultHandler
 
-Postprocessing is response is ok
+Postprocessing if response is ok
 
 ### Parameters
 
+*   `options`  
 *   `response`  
 *   `nthTry`  
 
@@ -154,8 +159,19 @@ No postprocessing
 
 ### Parameters
 
+*   `options`  
 *   `response`  
 *   `nthTry`  
+
+## cacheHandler
+
+provide cached data
+
+### Parameters
+
+*   `options`  
+*   `response` **any** 
+*   `nthTry` **any** 
 
 # install
 
