@@ -232,13 +232,6 @@ export function cacheHandler(options, response, nthTry) {
   };
 }
 
-export function retryWithoutCache(options, response, nthTry) {
-  console.log("retryWithoutCache", response.url);
-  delete options.headers["If-Match"];
-
-  return { done: false, repeatAfter: 0, response, postprocess: false };
-}
-
 export const defaultStateActions = {
   "-1": retryHandler,
   0: retryHandler,
@@ -254,7 +247,7 @@ export const defaultStateActions = {
   404: defaultHandler, // NOT Found
   408: retryHandler, // Request timeout
   409: retryHandler, // Conflict
-  412: retryWithoutCache, // precondition failed
+  412: errorHandler, // precondition failed
   422: defaultHandler, // UNPROCESSABLE ENTITY
   423: retryHandler,
   429: rateLimitHandler,
