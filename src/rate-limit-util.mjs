@@ -228,7 +228,7 @@ export function cacheHandler(options, response, nthTry) {
   return {
     done: true,
     postprocess: response.ok,
-    response: options.cache.loadResponse(response.url)
+    response: options.cache.loadResponse(response)
   };
 }
 
