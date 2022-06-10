@@ -63,11 +63,11 @@ export async function stateActionHandler(fetch, url, options = {}) {
     try {
       let response = await fetch(url, options);
       const action = stateActions[response.status] || defaultHandler;
-      result = action(options, response, nthTry);
+      result = await action(options, response, nthTry);
       response = result.response;
 
       if (reporter) {
-        reporter(url, options.method, response.status, nthTry);
+        reporter(url, options.method, response.status, nthTry, options.headers["If-None-Match"]);
       }
 
       if (result.done) {
@@ -94,7 +94,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
       const action = stateActions[e.errno];
 
       if (action) {
-        result = action(options, undefined, nthTry);
+        result = await action(options, undefined, nthTry);
 
         if (result.repeatAfter === undefined) {
           throw e;
@@ -127,6 +127,7 @@ export const MAX_RETRIES = 4;
  * @see https://auth0.com/docs/policies/rate-limit-policy
  * @see https://developer.github.com/v3/#rate-limiting
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
+ * @param {Object} options
  * @param {Response} response
  * @param {number} nthTry
  * @returns {HandlerResult}
@@ -171,7 +172,8 @@ const retryTimes = [100, 10000, 30000, 60000];
 
 /**
  * Try several times with a increasing delay.
- * @param {Object} response
+ * @param {Object} options
+ * @param {Response} response
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
@@ -202,6 +204,10 @@ export function redirectHandler(options, response, nthTry) {
 
 /**
  * Postprocessing if response is ok
+ * @param {Object} options
+ * @param {Response} response
+ * @param {number} nthTry
+ * @returns {HandlerResult}
  */
 
 export function defaultHandler(options, response, nthTry) {
@@ -213,22 +219,28 @@ export function defaultHandler(options, response, nthTry) {
 
 /**
  * No postprocessing
+ * @param {Object} options
+ * @param {Response} response
+ * @param {number} nthTry
+ * @returns {HandlerResult}
  */
 export function errorHandler(options, response, nthTry) {
   return { done: true, response, postprocess: false };
 }
 
 /**
- * Provide cached data
- * @param {*} response
- * @param {*} nthTry
- * @returns
+ * Provide cached data.
+ * @param {Object} options
+ * @param {Response} response
+ * @param {number} nthTry
+ * @returns {HandlerResult}
  */
-export function cacheHandler(options, response, nthTry) {
+export async function cacheHandler(options, response, nthTry) {
+  response = await options.cache.loadResponse(response);
   return {
     done: true,
     postprocess: response.ok,
-    response: options.cache.loadResponse(response)
+    response
   };
 }
 
