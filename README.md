@@ -121,7 +121,7 @@ Waits and retries after rate limit reset time has reached.
 
 ### Parameters
 
-*   `options`  
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
@@ -133,12 +133,12 @@ Increasing delay for each retry
 
 ## retryHandler
 
-Try 3 times with a delay.
+Try several times with a increasing delay.
 
 ### Parameters
 
-*   `options`  
-*   `response` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
 Returns **[HandlerResult](#handlerresult)** 
@@ -149,9 +149,11 @@ Postprocessing if response is ok
 
 ### Parameters
 
-*   `options`  
-*   `response`  
-*   `nthTry`  
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+
+Returns **[HandlerResult](#handlerresult)** 
 
 ## errorHandler
 
@@ -159,19 +161,23 @@ No postprocessing
 
 ### Parameters
 
-*   `options`  
-*   `response`  
-*   `nthTry`  
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+
+Returns **[HandlerResult](#handlerresult)** 
 
 ## cacheHandler
 
-provide cached data
+Provide cached data.
 
 ### Parameters
 
-*   `options`  
-*   `response` **any** 
-*   `nthTry` **any** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+
+Returns **[HandlerResult](#handlerresult)** 
 
 # install
 
