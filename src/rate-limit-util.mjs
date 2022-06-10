@@ -170,7 +170,7 @@ export function rateLimitHandler(options, response, nthTry) {
 const retryTimes = [100, 10000, 30000, 60000];
 
 /**
- * Try 3 times with a delay.
+ * Try several times with a increasing delay.
  * @param {Object} response
  * @param {number} nthTry
  * @returns {HandlerResult}
@@ -219,7 +219,7 @@ export function errorHandler(options, response, nthTry) {
 }
 
 /**
- * provide cached data
+ * Provide cached data
  * @param {*} response
  * @param {*} nthTry
  * @returns
