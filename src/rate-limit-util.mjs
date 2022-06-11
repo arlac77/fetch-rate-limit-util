@@ -211,7 +211,7 @@ export function redirectHandler(options, response, nthTry) {
  */
 export function defaultHandler(options, response, nthTry) {
   if (options.cache) {
-    options.cache.storeResponse(response, options);
+    options.cache.storeResponse(response);
   }
   return { done: true, response, postprocess: response.ok };
 }
@@ -235,7 +235,7 @@ export function errorHandler(options, response, nthTry) {
  * @returns {HandlerResult}
  */
 export async function cacheHandler(options, response, nthTry) {
-  response = await options.cache.loadResponse(response, options);
+  response = await options.cache.loadResponse(response);
   return {
     done: true,
     postprocess: response.ok,
