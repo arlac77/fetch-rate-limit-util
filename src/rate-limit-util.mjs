@@ -20,9 +20,8 @@
 
 async function wait(url, options, result) {
   if (result.repeatAfter > 0) {
-    if (options.reporter && result.message) {
+    result.message &&options.reporter &&
       options.reporter(url, options.method || "GET", result.message);
-    }
 
     await new Promise(resolve => setTimeout(resolve, result.repeatAfter));
   }
@@ -66,9 +65,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
       result = await action(options, response, nthTry);
       response = result.response;
 
-      if (reporter) {
-        reporter(url, options.method, response.status, nthTry, options.headers["If-None-Match"]);
-      }
+      reporter && reporter(url, options.method, response.status, nthTry, options.headers["If-None-Match"]);
 
       if (result.done) {
         if (postprocess) {
@@ -87,9 +84,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
         url = result.url;
       }
     } catch (e) {
-      if (reporter) {
-        reporter(url, options.method, e, nthTry);
-      }
+      reporter && reporter(url, options.method, e, nthTry);
 
       const action = stateActions[e.errno];
 
