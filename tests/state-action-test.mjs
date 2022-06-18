@@ -6,13 +6,8 @@ async function sat(t, request, responses, expected) {
   let usedResponse;
 
   try {
-    const postprocess = async response => {
-      if (request.postprocess) {
-        return request.postprocess();
-      }
-
-      return { response };
-    };
+    const postprocess = async response =>
+      request.postprocess ? request.postprocess() : { response };
 
     const { response } = await stateActionHandler(
       async function (url, options) {
@@ -25,6 +20,7 @@ async function sat(t, request, responses, expected) {
             get: name => usedResponse.headers && usedResponse.headers[name]
           },
           status: usedResponse.status,
+          body: usedResponse.body,
           ok: true
         };
       },
@@ -36,9 +32,9 @@ async function sat(t, request, responses, expected) {
 
     t.is(response.status, expected.status);
 
-    /* if (expected.body) {
+    if (expected.body) {
       t.is(response.body, expected.body);
-    }*/
+    }
 
     if (expected.url) {
       t.is(response.url, expected.url);
