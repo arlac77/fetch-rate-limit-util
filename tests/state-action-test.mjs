@@ -36,7 +36,7 @@ async function sat(t, request, responses, expected) {
 
     t.is(response.status, expected.status);
 
-   /* if (expected.body) {
+    /* if (expected.body) {
       t.is(response.body, expected.body);
     }*/
 
@@ -52,9 +52,9 @@ async function sat(t, request, responses, expected) {
   }
 }
 sat.title = (providedTitle = "state action", request, responses, expected) =>
-  `${providedTitle} ${JSON.stringify(request)} ${
-    responses.map(r =>`${r.status} ${r.ok ? 'ok':'failed'}`).join(',')
-  } ${JSON.stringify(expected)}`.trim();
+  `${providedTitle} ${JSON.stringify(request)} ${responses
+    .map(r => `${r.status} ${r.ok ? "ok" : "failed"}`)
+    .join(",")} ${JSON.stringify(expected)}`.trim();
 
 const REQUEST = { url: "http://somewhere/" };
 
