@@ -8,7 +8,7 @@ async function sat(t, request, responses, expected) {
   try {
     const postprocess = async response => {
       if (request.postprocess) {
-        return await request.postprocess();
+        return request.postprocess();
       }
 
       return { response };
@@ -52,9 +52,9 @@ async function sat(t, request, responses, expected) {
   }
 }
 sat.title = (providedTitle = "state action", request, responses, expected) =>
-  `${providedTitle} ${JSON.stringify(request)} ${JSON.stringify(
-    responses
-  )} ${JSON.stringify(expected)}`.trim();
+  `${providedTitle} ${JSON.stringify(request)} ${
+    responses.map(r =>`${r.status} ${r.ok ? 'ok':'failed'}`).join(',')
+  } ${JSON.stringify(expected)}`.trim();
 
 const REQUEST = { url: "http://somewhere/" };
 
