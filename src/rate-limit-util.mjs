@@ -244,6 +244,7 @@ export const defaultStateActions = {
   201: defaultHandler, // Created
   301: redirectHandler,
   302: redirectHandler,
+  303: redirectHandler, // See Other
   304: cacheHandler, // Not Modified cache ?
   307: redirectHandler,
   308: redirectHandler,
