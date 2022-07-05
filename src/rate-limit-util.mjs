@@ -65,7 +65,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
       result = await action(options, response, nthTry);
       response = result.response;
 
-      reporter && reporter(url, options.method, response.status, nthTry, options.headers["If-None-Match"]);
+      reporter && reporter(url, options.method, response.status, nthTry);
 
       if (result.done) {
         if (postprocess) {
@@ -110,7 +110,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
 /**
  * Minimum wait time in msecs.
  */
-export const MIN_WAIT_MSECS = 1000;
+export const MIN_WAIT_MSECS = 2000;
 
 /**
  * Max # of retries.
