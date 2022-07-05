@@ -1,5 +1,5 @@
 import test from "ava";
-import { rateLimitHandler } from "fetch-rate-limit-util";
+import { rateLimitHandler, MIN_WAIT_MSECS } from "fetch-rate-limit-util";
 
 async function rlt(t, headers, nthRetry, expected) {
   const options = {};
@@ -26,8 +26,8 @@ test(rlt, {}, 6, { done: true, postprocess: true });
 test(rlt, { "x-ratelimit-reset": "abc" }, 1, {
   done: false,
   postprocess: false,
-  repeatAfter: 1000,
-  message: "Rate limit reached: waiting for 1s"
+  repeatAfter: MIN_WAIT_MSECS,
+  message: `Rate limit reached: waiting for ${MIN_WAIT_MSECS/1000}s`
 });
 
 test(rlt, { "retry-after": null }, 1, {
@@ -56,8 +56,8 @@ test(
   {
     done: false,
     postprocess: false,
-    repeatAfter: 1000,
-    message: "Rate limit reached: waiting for 1s"
+    repeatAfter: MIN_WAIT_MSECS,
+    message: `Rate limit reached: waiting for ${MIN_WAIT_MSECS/1000}s`
   }
 );
 
