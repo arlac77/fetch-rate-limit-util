@@ -123,7 +123,7 @@ export const MAX_RETRIES = 4;
  * @see https://developer.github.com/v3/#rate-limiting
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
  * @param {Object} options
- * @param {Response} response
+ * @param {Response} response from fetch
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
@@ -168,7 +168,7 @@ const retryTimes = [100, 10000, 30000, 60000];
 /**
  * Try several times with a increasing delay.
  * @param {Object} options
- * @param {Response} response
+ * @param {Response} response from fetch
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
@@ -200,7 +200,7 @@ export function redirectHandler(options, response, nthTry) {
 /**
  * Postprocessing if response is ok
  * @param {Object} options
- * @param {Response} response
+ * @param {Response} response from fetch
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
@@ -214,7 +214,7 @@ export function defaultHandler(options, response, nthTry) {
 /**
  * No postprocessing
  * @param {Object} options
- * @param {Response} response
+ * @param {Response} response from fetch
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
@@ -225,7 +225,7 @@ export function errorHandler(options, response, nthTry) {
 /**
  * Provide cached data.
  * @param {Object} options
- * @param {Response} response
+ * @param {Response} response from fetch
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
@@ -241,25 +241,26 @@ export async function cacheHandler(options, response, nthTry) {
 export const defaultStateActions = {
   "-1": retryHandler,
   0: retryHandler,
-  201: defaultHandler, // Created
-  301: redirectHandler,
-  302: redirectHandler,
+  // 201: defaultHandler, // Created
+  // 202: defaultHandler, // Accepted
+  301: redirectHandler, // Moved Permanently
+  302: redirectHandler, // Found
   303: redirectHandler, // See Other
-  304: cacheHandler, // Not Modified cache ?
-  307: redirectHandler,
-  308: redirectHandler,
+  304: cacheHandler, // Not Modified
+  307: redirectHandler, // Temporary Redirect
+  308: redirectHandler, // Permanent Redirect
   400: errorHandler, // Bad Request
-  401: defaultHandler,
+  // 401: defaultHandler,
   403: rateLimitHandler,
-  404: defaultHandler, // NOT Found
+  // 404: defaultHandler, // NOT Found
   408: retryHandler, // Request timeout
   409: retryHandler, // Conflict
   412: errorHandler, // precondition failed
-  422: defaultHandler, // UNPROCESSABLE ENTITY
+  // 422: defaultHandler, // UNPROCESSABLE ENTITY
   423: retryHandler,
   429: rateLimitHandler,
   444: retryHandler,
-  451: defaultHandler,
+  // 451: defaultHandler,
   500: retryHandler, // Internal Server Error
   502: retryHandler, // Bad Gateway
   503: retryHandler, // Service Unavailable
