@@ -39,8 +39,8 @@ const response = await stateActionHandler(fetch, someURL);
     *   [Properties](#properties-1)
 *   [stateActionHandler](#stateactionhandler)
     *   [Parameters](#parameters-1)
-*   [MIN_WAIT_MSECS](#min_wait_msecs)
-*   [MAX_RETRIES](#max_retries)
+*   [MIN\_WAIT\_MSECS](#min_wait_msecs)
+*   [MAX\_RETRIES](#max_retries)
 *   [rateLimitHandler](#ratelimithandler)
     *   [Parameters](#parameters-2)
 *   [retryTimes](#retrytimes)
@@ -63,7 +63,7 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 *   `number` **repeatAfter?** of milliseconds to wait befor next try
 *   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to report
 *   `done` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** op is finished return
-*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** 
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)**&#x20;
 *   `postprocess` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** exec postprocess
 
 ## RequestReporter
@@ -74,7 +74,7 @@ Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Sta
 
 ### Parameters
 
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
 ### Properties
 
@@ -90,22 +90,22 @@ Executes fetch operation and handles response.
 ### Parameters
 
 *   `fetch` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** executes the fetch operation
-*   `url` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [URL](https://developer.mozilla.org/docs/Web/API/URL/URL))** 
+*   `url` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [URL](https://developer.mozilla.org/docs/Web/API/URL/URL))**&#x20;
 *   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
 
-    *   `options.reporter` **[RequestReporter](#requestreporter)** 
-    *   `options.postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
-    *   `options.stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+    *   `options.reporter` **[RequestReporter](#requestreporter)**&#x20;
+    *   `options.postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)**&#x20;
+    *   `options.stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)>** from fetch
 
-## MIN_WAIT_MSECS
+## MIN\_WAIT\_MSECS
 
 Minimum wait time in msecs.
 
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
-## MAX_RETRIES
+## MAX\_RETRIES
 
 Max # of retries.
 
@@ -121,11 +121,11 @@ Waits and retries after rate limit reset time has reached.
 
 ### Parameters
 
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** from fetch
-*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
 
-Returns **[HandlerResult](#handlerresult)** 
+Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## retryTimes
 
@@ -137,11 +137,11 @@ Try several times with a increasing delay.
 
 ### Parameters
 
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** from fetch
-*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
 
-Returns **[HandlerResult](#handlerresult)** 
+Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## defaultHandler
 
@@ -149,11 +149,11 @@ Postprocessing if response is ok
 
 ### Parameters
 
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** from fetch
-*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
 
-Returns **[HandlerResult](#handlerresult)** 
+Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## errorHandler
 
@@ -161,11 +161,11 @@ No postprocessing
 
 ### Parameters
 
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** from fetch
-*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
 
-Returns **[HandlerResult](#handlerresult)** 
+Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## cacheHandler
 
@@ -173,11 +173,11 @@ Provide cached data.
 
 ### Parameters
 
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** from fetch
-*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
 
-Returns **[HandlerResult](#handlerresult)** 
+Returns **[HandlerResult](#handlerresult)**&#x20;
 
 # install
 
