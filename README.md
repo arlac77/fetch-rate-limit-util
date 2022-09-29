@@ -37,21 +37,23 @@ const response = await stateActionHandler(fetch, someURL);
 *   [RequestReporter](#requestreporter)
     *   [Parameters](#parameters)
     *   [Properties](#properties-1)
-*   [stateActionHandler](#stateactionhandler)
+*   [wait](#wait)
     *   [Parameters](#parameters-1)
+*   [stateActionHandler](#stateactionhandler)
+    *   [Parameters](#parameters-2)
 *   [MIN\_WAIT\_MSECS](#min_wait_msecs)
 *   [MAX\_RETRIES](#max_retries)
 *   [rateLimitHandler](#ratelimithandler)
-    *   [Parameters](#parameters-2)
+    *   [Parameters](#parameters-3)
 *   [retryTimes](#retrytimes)
 *   [retryHandler](#retryhandler)
-    *   [Parameters](#parameters-3)
-*   [defaultHandler](#defaulthandler)
     *   [Parameters](#parameters-4)
-*   [errorHandler](#errorhandler)
+*   [defaultHandler](#defaulthandler)
     *   [Parameters](#parameters-5)
-*   [cacheHandler](#cachehandler)
+*   [errorHandler](#errorhandler)
     *   [Parameters](#parameters-6)
+*   [cacheHandler](#cachehandler)
+    *   [Parameters](#parameters-7)
 
 ## HandlerResult
 
@@ -82,6 +84,14 @@ Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Sta
 *   `method` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** http method name
 *   `status` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error))** result of the last request
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** how often have we retried
+
+## wait
+
+### Parameters
+
+*   `url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**&#x20;
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
+*   `result` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
 ## stateActionHandler
 
