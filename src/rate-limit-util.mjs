@@ -18,9 +18,15 @@
  * @property {number} nthTry how often have we retried
  */
 
+/**
+ * @param {string} url
+ * @param {Object} options
+ * @param {Object} result
+ */
 async function wait(url, options, result) {
   if (result.repeatAfter > 0) {
-    result.message &&options.reporter &&
+    result.message &&
+      options.reporter &&
       options.reporter(url, options.method || "GET", result.message);
 
     await new Promise(resolve => setTimeout(resolve, result.repeatAfter));
