@@ -41,8 +41,6 @@ const response = await stateActionHandler(fetch, someURL);
     *   [Parameters](#parameters-1)
 *   [stateActionHandler](#stateactionhandler)
     *   [Parameters](#parameters-2)
-*   [MIN\_WAIT\_MSECS](#min_wait_msecs)
-*   [MAX\_RETRIES](#max_retries)
 *   [rateLimitHandler](#ratelimithandler)
     *   [Parameters](#parameters-3)
 *   [retryTimes](#retrytimes)
@@ -54,6 +52,8 @@ const response = await stateActionHandler(fetch, someURL);
     *   [Parameters](#parameters-6)
 *   [cacheHandler](#cachehandler)
     *   [Parameters](#parameters-7)
+*   [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
+*   [DEFAULT\_MAX\_RETRIES](#default_max_retries)
 
 ## HandlerResult
 
@@ -101,25 +101,13 @@ Executes fetch operation and handles response.
 
 *   `fetch` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** executes the fetch operation
 *   `url` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [URL](https://developer.mozilla.org/docs/Web/API/URL/URL))**&#x20;
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
     *   `options.reporter` **[RequestReporter](#requestreporter)**&#x20;
     *   `options.postprocess` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)**&#x20;
     *   `options.stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)>** from fetch
-
-## MIN\_WAIT\_MSECS
-
-Minimum wait time in msecs.
-
-Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
-
-## MAX\_RETRIES
-
-Max # of retries.
-
-Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
 ## rateLimitHandler
 
@@ -188,6 +176,18 @@ Provide cached data.
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
 
 Returns **[HandlerResult](#handlerresult)**&#x20;
+
+## DEFAULT\_MIN\_WAIT\_MSECS
+
+Minimum wait time in msecs.
+
+Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
+
+## DEFAULT\_MAX\_RETRIES
+
+Max # of retries.
+
+Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
 # install
 
