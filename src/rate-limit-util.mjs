@@ -43,18 +43,12 @@ async function wait(url, options, result) {
  * @param {Object} options.stateActions
  * @return {Promise<Response>} from fetch
  */
-export async function stateActionHandler(fetch, url, options = {}) {
+export async function stateActionHandler(fetch, url, options) {
+  options = { ...defaultOptions, ...options };
+
   const reporter = options.reporter;
   const postprocess = options.postprocess;
-  const stateActions = options.stateActions || defaultStateActions;
-
-  if (options.headers === undefined) {
-    options.headers = {};
-  }
-
-  if (options.method === undefined) {
-    options.method = "GET";
-  }
+  const stateActions = options.stateActions;
 
   if (
     (options.method === "GET" || options.method === "HEAD") &&
@@ -63,7 +57,7 @@ export async function stateActionHandler(fetch, url, options = {}) {
     await options.cache.addHeaders(url, options.headers);
   }
 
-  for (let nthTry = 1; nthTry < MAX_RETRIES; nthTry++) {
+  for (let nthTry = 1; nthTry < options.maxRetries; nthTry++) {
     let result;
     try {
       let response = await fetch(url, options);
@@ -109,19 +103,9 @@ export async function stateActionHandler(fetch, url, options = {}) {
   }
 
   throw new Error(
-    `${url},${options.method}: Max retry count reached (${MAX_RETRIES})`
+    `${url},${options.method}: Max retry count reached (${options.maxRetries})`
   );
 }
-
-/**
- * Minimum wait time in msecs.
- */
-export const MIN_WAIT_MSECS = 2000;
-
-/**
- * Max # of retries.
- */
-export const MAX_RETRIES = 4;
 
 /**
  * Waits and retries after rate limit reset time has reached.
@@ -140,7 +124,7 @@ export function rateLimitHandler(options, response, nthTry) {
     "x-ratelimit-reset": value => {
       const rateLimitReset = parseInt(value);
       return isNaN(rateLimitReset)
-        ? MIN_WAIT_MSECS
+        ? DEFAULT_MIN_WAIT_MSECS
         : new Date(rateLimitReset * 1000).getTime() - Date.now();
     }
   };
@@ -150,8 +134,8 @@ export function rateLimitHandler(options, response, nthTry) {
     if (value != null && value !== undefined) {
       let repeatAfter = f(value);
       if (repeatAfter) {
-        if (repeatAfter < MIN_WAIT_MSECS) {
-          repeatAfter = MIN_WAIT_MSECS;
+        if (repeatAfter < DEFAULT_MIN_WAIT_MSECS) {
+          repeatAfter = DEFAULT_MIN_WAIT_MSECS;
         }
         return {
           repeatAfter,
@@ -244,6 +228,16 @@ export async function cacheHandler(options, response, nthTry) {
   };
 }
 
+/**
+ * Minimum wait time in msecs.
+ */
+export const DEFAULT_MIN_WAIT_MSECS = 2000;
+
+/**
+ * Max # of retries.
+ */
+export const DEFAULT_MAX_RETRIES = 4;
+
 export const defaultStateActions = {
   "-1": retryHandler,
   0: retryHandler,
@@ -274,4 +268,12 @@ export const defaultStateActions = {
   599: retryHandler,
 
   ERR_STREAM_PREMATURE_CLOSE: retryHandler
+};
+
+const defaultOptions = {
+  stateActions: defaultStateActions,
+  headers: {},
+  method: "GET",
+  maxRetries: DEFAULT_MAX_RETRIES,
+  minWaitTime: DEFAULT_MIN_WAIT_MSECS
 };
