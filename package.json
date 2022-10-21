@@ -46,6 +46,7 @@
   "template": {
     "inheritFrom": [
       "arlac77/template-arlac77-github",
+      "arlac77/template-broser-ava",
       "arlac77/template-esm-only"
     ]
   }
