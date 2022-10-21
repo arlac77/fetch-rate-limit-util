@@ -40,8 +40,14 @@ async function sat(t, request, responses, expected) {
       t.is(response.url, expected.url);
     }
   } catch (e) {
-    if (expected && expected.message) {
-      t.is(e.message, expected.message);
+    if (expected?.message) {
+      if(expected.message instanceof RegExp) {
+        t.regex(e.message, expected.message);
+      }
+      else {
+        t.is(e.message, expected.message);
+      }
+    
     } else {
       throw e;
     }
@@ -107,7 +113,7 @@ test(
     postprocess: async () => JSON.parse("{ xxx")
   },
   [{ status: 200, ok: true }],
-  new Error("Unexpected token x in JSON at position 2")
+  { message: /Unexpected token x in JSON at position 2|JSON Parse error/}
 );
 
 test(
