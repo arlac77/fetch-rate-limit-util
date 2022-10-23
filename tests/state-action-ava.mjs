@@ -30,14 +30,14 @@ async function sat(t, request, responses, expected) {
 
     t.truthy(response);
 
-    t.is(response.status, expected.status);
+    t.is(response.status, expected.status, "wrong status code");
 
     if (expected.body) {
       t.is(response.body, expected.body);
     }
 
     if (expected.url) {
-      t.is(response.url, expected.url);
+      t.is(response.url, expected.url, "unepected url");
     }
   } catch (e) {
     if (expected?.message) {
