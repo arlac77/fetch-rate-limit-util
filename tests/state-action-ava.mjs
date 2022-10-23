@@ -41,19 +41,17 @@ async function sat(t, request, responses, expected) {
     }
   } catch (e) {
     if (expected?.message) {
-      if(expected.message instanceof RegExp) {
-        t.regex(e.message, expected.message);
+      if (expected.message instanceof RegExp) {
+        t.regex(e.message, expected.message, `unexpected error message doe not match ${expected.message}`);
+      } else {
+        t.is(e.message, expected.message "unexpected error message");
       }
-      else {
-        t.is(e.message, expected.message);
-      }
-    
     } else {
       throw e;
     }
   }
 }
-sat.title = (providedTitle = "state action", request, responses, expected) =>
+sat.title = (providedTitle = "stateActionHandler", request, responses, expected) =>
   `${providedTitle} ${JSON.stringify(request)} ${responses
     .map(r => `${r.status} ${r.ok ? "ok" : "failed"}`)
     .join(",")} ${JSON.stringify(expected)}`.trim();
@@ -90,7 +88,9 @@ test(
     { status: 500, ok: false },
     { status: 500, ok: false }
   ],
-  new Error(`http://somewhere/,GET: Max retry count reached (${DEFAULT_MAX_RETRIES})`)
+  new Error(
+    `http://somewhere/,GET: Max retry count reached (${DEFAULT_MAX_RETRIES})`
+  )
 );
 
 test(
@@ -106,14 +106,14 @@ test(
 );
 
 test(
-  "JSON parse error",
+  "stateActionHandler JSON parse error",
   sat,
   {
     ...REQUEST,
     postprocess: async () => JSON.parse("{ xxx")
   },
   [{ status: 200, ok: true }],
-  { message: /Unexpected token x in JSON at position 2|JSON Parse error/}
+  { message: /Unexpected token x in JSON at position 2|JSON Parse error/ }
 );
 
 test(
