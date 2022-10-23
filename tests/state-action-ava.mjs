@@ -42,16 +42,25 @@ async function sat(t, request, responses, expected) {
   } catch (e) {
     if (expected?.message) {
       if (expected.message instanceof RegExp) {
-        t.regex(e.message, expected.message, `unexpected error message doe not match ${expected.message}`);
+        t.regex(
+          e.message,
+          expected.message,
+          `unexpected error message doe not match ${expected.message}`
+        );
       } else {
-        t.is(e.message, expected.message "unexpected error message");
+        t.is(e.message, expected.message, "unexpected error message");
       }
     } else {
       throw e;
     }
   }
 }
-sat.title = (providedTitle = "stateActionHandler", request, responses, expected) =>
+sat.title = (
+  providedTitle = "stateActionHandler",
+  request,
+  responses,
+  expected
+) =>
   `${providedTitle} ${JSON.stringify(request)} ${responses
     .map(r => `${r.status} ${r.ok ? "ok" : "failed"}`)
     .join(",")} ${JSON.stringify(expected)}`.trim();
