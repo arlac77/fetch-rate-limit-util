@@ -122,7 +122,7 @@ test(
     postprocess: async () => JSON.parse("{ xxx")
   },
   [{ status: 200, ok: true }],
-  { message: /Unexpected token x in JSON at position 2|JSON Parse error|Expected property name/ }
+  { message: /Unexpected token x in JSON at position 2|JSON Parse error|Expected property name|JSON.parse: expected property name/ }
 );
 
 test(
