@@ -40,6 +40,7 @@ jobs:
   release:
     needs:
       - test
+      - test-browser
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -55,7 +56,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PKGBUILD_PUBLISH: ${{ secrets.PKGBUILD_PUBLISH }}
   finish:
-    needs: test
+    needs:
+      - test
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
