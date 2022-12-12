@@ -35,23 +35,22 @@ const response = await stateActionHandler(fetch, someURL);
 *   [HandlerResult](#handlerresult)
     *   [Properties](#properties)
 *   [RequestReporter](#requestreporter)
-    *   [Parameters](#parameters)
     *   [Properties](#properties-1)
 *   [wait](#wait)
-    *   [Parameters](#parameters-1)
+    *   [Parameters](#parameters)
 *   [stateActionHandler](#stateactionhandler)
-    *   [Parameters](#parameters-2)
+    *   [Parameters](#parameters-1)
 *   [rateLimitHandler](#ratelimithandler)
-    *   [Parameters](#parameters-3)
+    *   [Parameters](#parameters-2)
 *   [retryTimes](#retrytimes)
 *   [retryHandler](#retryhandler)
-    *   [Parameters](#parameters-4)
+    *   [Parameters](#parameters-3)
 *   [defaultHandler](#defaulthandler)
-    *   [Parameters](#parameters-5)
+    *   [Parameters](#parameters-4)
 *   [errorHandler](#errorhandler)
-    *   [Parameters](#parameters-6)
+    *   [Parameters](#parameters-5)
 *   [cacheHandler](#cachehandler)
-    *   [Parameters](#parameters-7)
+    *   [Parameters](#parameters-6)
 *   [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
 *   [DEFAULT\_MAX\_RETRIES](#default_max_retries)
 
@@ -73,10 +72,6 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 Function to provide progress report.
 
 Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)
-
-### Parameters
-
-*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
 ### Properties
 
