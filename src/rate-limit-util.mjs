@@ -13,7 +13,6 @@
  * @typedef {Function} RequestReporter
  * @property {String} url to be requested
  * @property {String} method http method name
- * @param {Object} options
  * @property {String|Error} status result of the last request
  * @property {number} nthTry how often have we retried
  */
@@ -153,7 +152,7 @@ export function rateLimitHandler(options, response, nthTry) {
 /**
  * Increasing delay for each retry
  */
-const retryTimes = [100, 10000, 30000, 60000];
+const retryTimes = [200, 10000, 30000, 60000];
 
 /**
  * Try several times with a increasing delay.
