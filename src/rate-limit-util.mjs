@@ -221,11 +221,11 @@ export function errorHandler(options, response, nthTry) {
  * @returns {HandlerResult}
  */
 export async function cacheHandler(options, response, nthTry) {
-  response = await options.cache.loadResponse(response);
   return {
     done: true,
     postprocess: response.ok,
-    response
+    response: await options.cache.loadResponse(response),
+    message: "from cache"
   };
 }
 
