@@ -122,7 +122,9 @@ Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## retryTimes
 
-Increasing delay for each retry
+Retry timeouts with
+increasing delay for each retry.
+Values in msecs.
 
 ## retryHandler
 
@@ -138,7 +140,7 @@ Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## defaultHandler
 
-Postprocessing if response is ok
+Postprocessing if response is ok.
 
 ### Parameters
 
@@ -150,7 +152,7 @@ Returns **[HandlerResult](#handlerresult)**&#x20;
 
 ## errorHandler
 
-No postprocessing
+No postprocessing.
 
 ### Parameters
 
