@@ -150,7 +150,9 @@ export function rateLimitHandler(options, response, nthTry) {
 }
 
 /**
- * Increasing delay for each retry
+ * Retry timeouts with
+ * increasing delay for each retry.
+ * Values in msecs.
  */
 const retryTimes = [200, 10000, 30000, 60000];
 
@@ -187,7 +189,7 @@ export function redirectHandler(options, response, nthTry) {
 }
 
 /**
- * Postprocessing if response is ok
+ * Postprocessing if response is ok.
  * @param {Object} options
  * @param {Response} response from fetch
  * @param {number} nthTry
@@ -201,7 +203,7 @@ export function defaultHandler(options, response, nthTry) {
 }
 
 /**
- * No postprocessing
+ * No postprocessing.
  * @param {Object} options
  * @param {Response} response from fetch
  * @param {number} nthTry
