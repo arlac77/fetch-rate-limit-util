@@ -225,7 +225,8 @@ export async function cacheHandler(options, response, nthTry) {
   return {
     done: true,
     postprocess: response.ok,
-    response
+    response,
+    message: "from cache"
   };
 }
 
