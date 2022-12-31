@@ -32,6 +32,8 @@ async function wait(url, options, result) {
   }
 }
 
+const FAILED_RESPONSE = { ok: false, state: -1 };
+
 /**
  * Executes fetch operation and handles response.
  * @param {Function} fetch executes the fetch operation
@@ -59,10 +61,10 @@ export async function stateActionHandler(fetch, url, options) {
   for (let nthTry = 1; nthTry < options.maxRetries; nthTry++) {
     let result;
     try {
-      let response = await fetch(url, options) || { ok: false };
+      let response = await fetch(url, options) || FAILED_RESPONSE;
       const action = stateActions[response.status] || defaultHandler;
       result = await action(options, response, nthTry);
-      response = result.response;
+      response = result.response || FAILED_RESPONSE;
 
       reporter && reporter(url, options.method, response.status, nthTry);
 
