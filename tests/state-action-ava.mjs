@@ -1,7 +1,7 @@
 import test from "ava";
 import { DEFAULT_MAX_RETRIES, stateActionHandler } from "fetch-rate-limit-util";
 
-test.only ("undefined response", async t => {
+test ("undefined response", async t => {
 
   async function myFetch() {
     return undefined;
