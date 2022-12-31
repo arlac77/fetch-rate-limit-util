@@ -64,7 +64,7 @@ export async function stateActionHandler(fetch, url, options) {
       result = await action(options, response, nthTry);
       response = result.response;
 
-      reporter && reporter(url, options.method, response.status, nthTry);
+      reporter && reporter(url, options.method, response?.status, nthTry);
 
       if (result.done) {
         if (postprocess) {
