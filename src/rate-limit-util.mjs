@@ -59,12 +59,12 @@ export async function stateActionHandler(fetch, url, options) {
   for (let nthTry = 1; nthTry < options.maxRetries; nthTry++) {
     let result;
     try {
-      let response = await fetch(url, options);
+      let response = await fetch(url, options) | { ok: false };
       const action = stateActions[response.status] || defaultHandler;
       result = await action(options, response, nthTry);
       response = result.response;
 
-      reporter && reporter(url, options.method, response?.status, nthTry);
+      reporter && reporter(url, options.method, response.status, nthTry);
 
       if (result.done) {
         if (postprocess) {

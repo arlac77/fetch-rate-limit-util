@@ -1,6 +1,17 @@
 import test from "ava";
 import { DEFAULT_MAX_RETRIES, stateActionHandler } from "fetch-rate-limit-util";
 
+test.only ("undefined response", async t => {
+
+  async function myFetch() {
+    return undefined;
+  }
+
+  const res = await stateActionHandler(myFetch, "https://api.github.com/", {});
+  t.falsy(res.ok);
+});
+
+
 async function sat(t, request, responses, expected) {
   let iter = 0;
   let usedResponse;
