@@ -25,8 +25,7 @@
 async function wait(url, options, result) {
   if (result.repeatAfter > 0) {
     result.message &&
-      options.reporter &&
-      options.reporter(url, options.method || "GET", result.message);
+      options.reporter?.(url, options.method || "GET", result.message);
 
     await new Promise(resolve => setTimeout(resolve, result.repeatAfter));
   }
@@ -61,12 +60,18 @@ export async function stateActionHandler(fetch, url, options) {
   for (let nthTry = 1; nthTry < options.maxRetries; nthTry++) {
     let result;
     try {
-      let response = await fetch(url, options) || FAILED_RESPONSE;
+      const o = { };
+
+      if(options.method) { o.method = options.method; }
+      if(options.headers) { o.headers = options.headers; }
+      if(options.body) { o.body = options.body; }
+
+      let response = await fetch(url, o) || FAILED_RESPONSE;
       const action = stateActions[response.status] || defaultHandler;
       result = await action(options, response, nthTry);
-      response = result.response || FAILED_RESPONSE;
+      response = result.response || FAILED_RESPONSE;
 
-      reporter && reporter(url, options.method, response.status, nthTry);
+      reporter?.(url, options.method, response.status, nthTry);
 
       if (result.done) {
         if (postprocess) {
@@ -85,7 +90,7 @@ export async function stateActionHandler(fetch, url, options) {
         url = result.url;
       }
     } catch (e) {
-      reporter && reporter(url, options.method, e, nthTry);
+      reporter?.(url, options.method, e, nthTry);
 
       const action = stateActions[e.errno];
 
