@@ -68,7 +68,7 @@ export async function stateActionHandler(url, options) {
 
       let response = await fetch(url, o) || FAILED_RESPONSE;
       const action = stateActions[response.status] || defaultHandler;
-      result = await action(options, response, nthTry);
+      result = await action(response, options, nthTry);
       response = result.response || FAILED_RESPONSE;
 
       reporter?.(url, options.method, response.status, nthTry);
@@ -95,7 +95,7 @@ export async function stateActionHandler(url, options) {
       const action = stateActions[e.errno];
 
       if (action) {
-        result = await action(options, DUMMY_RESPONSE, nthTry);
+        result = await action(DUMMY_RESPONSE, options, nthTry);
 
         if (result.repeatAfter === undefined) {
           throw e;
@@ -118,12 +118,12 @@ export async function stateActionHandler(url, options) {
  * @see https://auth0.com/docs/policies/rate-limit-policy
  * @see https://developer.github.com/v3/#rate-limiting
  * @see https://opensource.zalando.com/restful-api-guidelines/#153
- * @param {Object} options
  * @param {Response} response from fetch
+ * @param {Object} options
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function rateLimitHandler(options, response, nthTry) {
+export function rateLimitHandler(response, options, nthTry) {
   const headers = {
     "retry-after": value =>
       value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
@@ -165,12 +165,12 @@ const retryTimes = [200, 10000, 30000, 60000];
 
 /**
  * Try several times with a increasing delay.
- * @param {Object} options
  * @param {Response} response from fetch
+ * @param {Object} options
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function retryHandler(options, response, nthTry) {
+export function retryHandler(response, options, nthTry) {
   const repeatAfter = retryTimes[nthTry];
 
   if (repeatAfter) {
@@ -184,7 +184,7 @@ export function retryHandler(options, response, nthTry) {
   return { done: false, response, postprocess: false };
 }
 
-export function redirectHandler(options, response, nthTry) {
+export function redirectHandler(response, options, nthTry) {
   if (nthTry <= 3) {
     return {
       postprocess: false,
@@ -197,35 +197,35 @@ export function redirectHandler(options, response, nthTry) {
 
 /**
  * Postprocessing if response is ok.
- * @param {Object} options
  * @param {Response} response from fetch
+ * @param {Object} options
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function defaultHandler(options, response, nthTry) {
+export function defaultHandler(response, options, nthTry) {
   options.cache?.storeResponse(response);
   return { done: true, response, postprocess: response.ok };
 }
 
 /**
  * No postprocessing.
- * @param {Object} options
  * @param {Response} response from fetch
+ * @param {Object} options
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export function errorHandler(options, response, nthTry) {
+export function errorHandler(response, options, nthTry) {
   return { done: true, response, postprocess: false };
 }
 
 /**
  * Provide cached data.
- * @param {Object} options
  * @param {Response} response from fetch
+ * @param {Object} options
  * @param {number} nthTry
  * @returns {HandlerResult}
  */
-export async function cacheHandler(options, response, nthTry) {
+export async function cacheHandler(response, options, nthTry) {
   response = await options.cache.loadResponse(response);
   return {
     done: response.ok,

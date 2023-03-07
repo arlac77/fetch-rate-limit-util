@@ -3,7 +3,7 @@ import { DEFAULT_MAX_RETRIES, stateActionHandler } from "fetch-rate-limit-util";
 
 test("undefined response", async t => {
 
-  globalThis.fetch = async function (url, options) { return undefined };
+  globalThis.fetch = async (url, options) => { return undefined };
 
   const res = await stateActionHandler("https://api.github.com/", {});
   t.falsy(res.ok);

@@ -9,9 +9,9 @@ async function rlt(t, headers, nthRetry, expected) {
   };
 
   if (typeof expected === "function") {
-    t.true(expected(rateLimitHandler(options, response, nthRetry)));
+    t.true(expected(rateLimitHandler(response, options, nthRetry)));
   } else {
-    const res = rateLimitHandler(options, response, nthRetry);
+    const res = rateLimitHandler(response, options, nthRetry);
     delete res.response;
 
     t.deepEqual(expected, res);
