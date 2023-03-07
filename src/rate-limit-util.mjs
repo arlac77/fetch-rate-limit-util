@@ -229,7 +229,7 @@ export function errorHandler(options, response, nthTry) {
 export async function cacheHandler(options, response, nthTry) {
   response = await options.cache.loadResponse(response);
   return {
-    done: true,
+    done: response.ok,
     postprocess: response.ok,
     response,
     message: "from cache"
