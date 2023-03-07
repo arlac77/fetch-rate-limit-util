@@ -32,6 +32,7 @@ async function wait(url, options, result) {
 }
 
 const FAILED_RESPONSE = { ok: false, state: -1 };
+const DUMMY_RESPONSE = { ok: false };
 
 /**
  * Executes fetch operation and handles response.
@@ -95,7 +96,7 @@ export async function stateActionHandler(fetch, url, options) {
       const action = stateActions[e.errno];
 
       if (action) {
-        result = await action(options, undefined, nthTry);
+        result = await action(options, DUMMY_RESPONSE, nthTry);
 
         if (result.repeatAfter === undefined) {
           throw e;
@@ -203,9 +204,7 @@ export function redirectHandler(options, response, nthTry) {
  * @returns {HandlerResult}
  */
 export function defaultHandler(options, response, nthTry) {
-  if (options.cache) {
-    options.cache.storeResponse(response);
-  }
+  options.cache?.storeResponse(response);
   return { done: true, response, postprocess: response.ok };
 }
 
