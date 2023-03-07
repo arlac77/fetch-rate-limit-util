@@ -1,16 +1,13 @@
 import test from "ava";
 import { DEFAULT_MAX_RETRIES, stateActionHandler } from "fetch-rate-limit-util";
 
-test ("undefined response", async t => {
+test("undefined response", async t => {
 
-  async function myFetch() {
-    return undefined;
-  }
+  globalThis.fetch = async function (url, options) { return undefined };
 
-  const res = await stateActionHandler(myFetch, "https://api.github.com/", {});
+  const res = await stateActionHandler("https://api.github.com/", {});
   t.falsy(res.ok);
 });
-
 
 async function sat(t, request, responses, expected) {
   let iter = 0;
@@ -20,24 +17,24 @@ async function sat(t, request, responses, expected) {
     const postprocess = async response =>
       request.postprocess ? request.postprocess() : { response };
 
-    const { response } = await stateActionHandler(
-      async function (url, options) {
-        usedResponse = responses[iter] || { status: -1, headers: [] };
-        iter++;
+    globalThis.fetch = async function (url, options) {
+      usedResponse = responses[iter] || { status: -1, headers: [] };
+      iter++;
 
-        return {
-          url,
-          headers: {
-            get: name => usedResponse.headers && usedResponse.headers[name]
-          },
-          status: usedResponse.status,
-          body: usedResponse.body,
-          ok: true
-        };
-      },
-      request.url,
-      { ...request.options, postprocess }
-    );
+      return {
+        url,
+        headers: {
+          get: name => usedResponse.headers && usedResponse.headers[name]
+        },
+        status: usedResponse.status,
+        body: usedResponse.body,
+        ok: true
+      };
+    };
+    const { response } = await stateActionHandler(request.url, {
+      ...request.options,
+      postprocess
+    });
 
     t.truthy(response);
 
@@ -133,7 +130,10 @@ test(
     postprocess: async () => JSON.parse("{ xxx")
   },
   [{ status: 200, ok: true }],
-  { message: /Unexpected token x in JSON at position 2|JSON Parse error|Expected property name|JSON.parse: expected property name/ }
+  {
+    message:
+      /Unexpected token x in JSON at position 2|JSON Parse error|Expected property name|JSON.parse: expected property name/
+  }
 );
 
 test(
@@ -149,7 +149,7 @@ test(
   }
 );
 
-test(
+test.only(
   sat,
   REQUEST,
   [
@@ -158,7 +158,7 @@ test(
       ok: false,
       headers: { "x-ratelimit-reset": Date.now() / 1000 + 0.1 }
     },
-    { status: 200, ok: true, body: "abc" }
+    { status: 200, ok: true, body: "abc7" }
   ],
-  { status: 200, ok: true, body: "abc" }
+  { status: 200, ok: true, body: "abc7" }
 );

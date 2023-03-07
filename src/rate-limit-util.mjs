@@ -36,7 +36,6 @@ const DUMMY_RESPONSE = { ok: false };
 
 /**
  * Executes fetch operation and handles response.
- * @param {Function} fetch executes the fetch operation
  * @param {string|URL} url
  * @param {Object} options
  * @param {RequestReporter} options.reporter
@@ -44,7 +43,7 @@ const DUMMY_RESPONSE = { ok: false };
  * @param {Object} options.stateActions
  * @return {Promise<Response>} from fetch
  */
-export async function stateActionHandler(fetch, url, options) {
+export async function stateActionHandler(url, options) {
   options = { ...defaultOptions, ...options };
 
   const reporter = options.reporter;
