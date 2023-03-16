@@ -60,11 +60,11 @@ export async function stateActionHandler(url, options) {
   for (let nthTry = 1; nthTry < options.maxRetries; nthTry++) {
     let result;
     try {
-      const o = { };
+      const o = {};
 
-      if(options.method) { o.method = options.method; }
-      if(options.headers) { o.headers = options.headers; }
-      if(options.body) { o.body = options.body; }
+      if (options.method) { o.method = options.method; }
+      if (options.headers) { o.headers = options.headers; }
+      if (options.body) { o.body = options.body; }
 
       let response = await fetch(url, o) || FAILED_RESPONSE;
       const action = stateActions[response.status] || defaultHandler;
@@ -175,6 +175,7 @@ export function retryHandler(response, options, nthTry) {
 
   if (repeatAfter) {
     return {
+      done: false,
       postprocess: false,
       repeatAfter,
       message: `Waiting for ${repeatAfter / 1000}s`
@@ -187,6 +188,7 @@ export function retryHandler(response, options, nthTry) {
 export function redirectHandler(response, options, nthTry) {
   if (nthTry <= 3) {
     return {
+      done: false,
       postprocess: false,
       repeatAfter: 0,
       url: response.headers.get("location")
