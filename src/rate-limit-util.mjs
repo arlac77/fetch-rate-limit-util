@@ -39,6 +39,11 @@ const DUMMY_RESPONSE = { ok: false };
  * @param {string|URL} url
  * @param {Object} options
  * @param {RequestReporter} options.reporter
+ * @param {Object} [options.cache]
+ * @param {number} [options.maxRetries]
+ * @param {string} [options.method]
+ * @param {Object} [options.headers]
+ * @param {string} [options.body]
  * @param {Function} options.postprocess
  * @param {Object} options.stateActions
  * @return {Promise<Response>} from fetch
