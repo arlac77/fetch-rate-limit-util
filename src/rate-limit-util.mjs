@@ -71,10 +71,10 @@ export async function stateActionHandler(url, options) {
       if (options.headers) { o.headers = options.headers; }
       if (options.body) { o.body = options.body; }
 
-      let response = await fetch(url, o) || FAILED_RESPONSE;
+      let response = await fetch(url, o) || { ...FAILED_RESPONSE };
       const action = stateActions[response.status] || defaultHandler;
       result = await action(response, options, nthTry);
-      response = result.response || FAILED_RESPONSE;
+      response = result.response || { ...FAILED_RESPONSE };
 
       reporter?.(url, options.method, response.status, nthTry);
 
@@ -100,7 +100,7 @@ export async function stateActionHandler(url, options) {
       const action = stateActions[e.errno];
 
       if (action) {
-        result = await action(DUMMY_RESPONSE, options, nthTry);
+        result = await action({ ...DUMMY_RESPONSE }, options, nthTry);
 
         if (result.repeatAfter === undefined) {
           throw e;
