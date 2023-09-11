@@ -18,11 +18,11 @@ jobs:
           - macos-latest
           - windows-latest
         node-version:
-          - 18.16.1
-          - 20.4.0
+          - 18.17.1
+          - 20.6.1
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.7.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3.8.1
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -44,10 +44,10 @@ jobs:
           - chromium
           - firefox
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.7.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3.8.1
         with:
-          node-version: 18.16.1
+          node-version: 18.17.1
           cache: npm
       - run: npm ci
       - run: npm run test:browser-ava --if-present
@@ -59,10 +59,10 @@ jobs:
       - test-browser
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.7.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3.8.1
         with:
-          node-version: 18.16.1
+          node-version: 18.17.1
           cache: npm
       - run: npm ci
       - run: npx semantic-release

@@ -6,10 +6,10 @@ jobs:
   update_package_lock:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.7.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3.8.1
         with:
-          node-version: 18.16.1
+          node-version: 18.17.1
       - run: npm install
       - uses: gr2m/create-or-update-pull-request-action@v1
         env:
