@@ -67,11 +67,17 @@ export async function stateActionHandler(url, options) {
     try {
       const o = {};
 
-      if (options.method) { o.method = options.method; }
-      if (options.headers) { o.headers = options.headers; }
-      if (options.body) { o.body = options.body; }
+      if (options.method) {
+        o.method = options.method;
+      }
+      if (options.headers) {
+        o.headers = options.headers;
+      }
+      if (options.body) {
+        o.body = options.body;
+      }
 
-      let response = await fetch(url, o) || { ...FAILED_RESPONSE };
+      let response = (await fetch(url, o)) || { ...FAILED_RESPONSE };
       const action = stateActions[response.status] || defaultHandler;
       result = await action(response, options, nthTry);
       response = result.response || { ...FAILED_RESPONSE };
@@ -118,6 +124,28 @@ export async function stateActionHandler(url, options) {
   );
 }
 
+function calculateRepeatAfter(response) {
+  const headers = {
+    "retry-after": value =>
+      value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
+    "x-ratelimit-reset": value => {
+      const rateLimitReset = parseInt(value);
+      return isNaN(rateLimitReset)
+        ? DEFAULT_MIN_WAIT_MSECS
+        : new Date(rateLimitReset * 1000).getTime() - Date.now();
+    }
+  };
+  for (const [key, f] of Object.entries(headers)) {
+    const value = response.headers.get(key);
+    if (value != null && value !== undefined) {
+      let repeatAfter = f(value);
+      return repeatAfter < DEFAULT_MIN_WAIT_MSECS
+        ? DEFAULT_MIN_WAIT_MSECS
+        : repeatAfter;
+    }
+  }
+}
+
 /**
  * Waits and retries after rate limit reset time has reached.
  * @see https://auth0.com/docs/policies/rate-limit-policy
@@ -129,35 +157,18 @@ export async function stateActionHandler(url, options) {
  * @returns {HandlerResult}
  */
 export function rateLimitHandler(response, options, nthTry) {
-  const headers = {
-    "retry-after": value =>
-      value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
-    "x-ratelimit-reset": value => {
-      const rateLimitReset = parseInt(value);
-      return isNaN(rateLimitReset)
-        ? DEFAULT_MIN_WAIT_MSECS
-        : new Date(rateLimitReset * 1000).getTime() - Date.now();
-    }
-  };
+  const repeatAfter = calculateRepeatAfter(response);
 
-  for (const [key, f] of Object.entries(headers)) {
-    const value = response.headers.get(key);
-    if (value != null && value !== undefined) {
-      let repeatAfter = f(value);
-      if (repeatAfter) {
-        if (repeatAfter < DEFAULT_MIN_WAIT_MSECS) {
-          repeatAfter = DEFAULT_MIN_WAIT_MSECS;
-        }
-        return {
-          repeatAfter,
-          done: false,
-          postprocess: false,
-          response,
-          message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
-        };
-      }
-    }
+  if (repeatAfter) {
+    return {
+      repeatAfter,
+      done: false,
+      postprocess: false,
+      response,
+      message: `Rate limit reached: waiting for ${repeatAfter / 1000}s`
+    };
   }
+
   return { done: true, response, postprocess: response.ok };
 }
 
@@ -176,7 +187,7 @@ const retryTimes = [200, 10000, 30000, 60000];
  * @returns {HandlerResult}
  */
 export function retryHandler(response, options, nthTry) {
-  const repeatAfter = retryTimes[nthTry];
+  const repeatAfter = calculateRepeatAfter(response) || retryTimes[nthTry];
 
   if (repeatAfter) {
     return {
@@ -281,7 +292,8 @@ export const defaultStateActions = {
   504: retryHandler, // Gateway Timeout
   599: retryHandler,
 
-  ERR_STREAM_PREMATURE_CLOSE: retryHandler
+  ERR_STREAM_PREMATURE_CLOSE: retryHandler,
+  UND_ERR_CONNECT_TIMEOUT: retryHandler
 };
 
 const defaultOptions = {
