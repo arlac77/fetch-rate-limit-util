@@ -103,7 +103,7 @@ export async function stateActionHandler(url, options) {
     } catch (e) {
       reporter?.(url, options.method, e, nthTry);
 
-      const action = stateActions[e.errno];
+      const action = stateActions[e.errno || e.cause?.code];
 
       if (action) {
         result = await action({ ...DUMMY_RESPONSE }, options, nthTry);
