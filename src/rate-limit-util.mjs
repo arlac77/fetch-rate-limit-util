@@ -124,24 +124,31 @@ export async function stateActionHandler(url, options) {
   );
 }
 
+/**
+ * 
+ * @param {*} response 
+ * @returns {number|undefined} msecs to wait
+ */
 function calculateRepeatAfter(response) {
-  const headers = {
-    "retry-after": value =>
-      value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
-    "x-ratelimit-reset": value => {
-      const rateLimitReset = parseInt(value);
-      return isNaN(rateLimitReset)
-        ? DEFAULT_MIN_WAIT_MSECS
-        : new Date(rateLimitReset * 1000).getTime() - Date.now();
-    }
-  };
-  for (const [key, f] of Object.entries(headers)) {
-    const value = response.headers.get(key);
-    if (value != null && value !== undefined) {
-      let repeatAfter = f(value);
-      return repeatAfter < DEFAULT_MIN_WAIT_MSECS
-        ? DEFAULT_MIN_WAIT_MSECS
-        : repeatAfter;
+  if (response.headers) {
+    const headers = {
+      "retry-after": value =>
+        value.match(/^\d+$/) ? parseInt(value) * 1000 : undefined,
+      "x-ratelimit-reset": value => {
+        const rateLimitReset = parseInt(value);
+        return isNaN(rateLimitReset)
+          ? DEFAULT_MIN_WAIT_MSECS
+          : new Date(rateLimitReset * 1000).getTime() - Date.now();
+      }
+    };
+    for (const [key, f] of Object.entries(headers)) {
+      const value = response.headers.get(key);
+      if (value != null && value !== undefined) {
+        let repeatAfter = f(value);
+        return repeatAfter < DEFAULT_MIN_WAIT_MSECS
+          ? DEFAULT_MIN_WAIT_MSECS
+          : repeatAfter;
+      }
     }
   }
 }
