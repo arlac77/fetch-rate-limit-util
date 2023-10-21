@@ -23,7 +23,10 @@ Waits and retry after rate limit rest time has reached.
 ```js
 import { stateActionHandler } from "fetch-rate-limit-util";
 
-const response = await stateActionHandler(fetch, someURL);
+const response = await stateActionHandler(someURL, options);
+
+// if rate limit occurs waits and retires
+
 ```
 
 # API
@@ -32,27 +35,32 @@ const response = await stateActionHandler(fetch, someURL);
 
 ### Table of Contents
 
-*   [HandlerResult](#handlerresult)
-    *   [Properties](#properties)
-*   [RequestReporter](#requestreporter)
-    *   [Properties](#properties-1)
-*   [wait](#wait)
-    *   [Parameters](#parameters)
-*   [stateActionHandler](#stateactionhandler)
-    *   [Parameters](#parameters-1)
-*   [rateLimitHandler](#ratelimithandler)
-    *   [Parameters](#parameters-2)
-*   [retryTimes](#retrytimes)
-*   [retryHandler](#retryhandler)
-    *   [Parameters](#parameters-3)
-*   [defaultHandler](#defaulthandler)
-    *   [Parameters](#parameters-4)
-*   [errorHandler](#errorhandler)
-    *   [Parameters](#parameters-5)
-*   [cacheHandler](#cachehandler)
-    *   [Parameters](#parameters-6)
-*   [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
-*   [DEFAULT\_MAX\_RETRIES](#default_max_retries)
+- [fetch-rate-limit-util](#fetch-rate-limit-util)
+- [API](#api)
+    - [Table of Contents](#table-of-contents)
+  - [HandlerResult](#handlerresult)
+    - [Properties](#properties)
+  - [RequestReporter](#requestreporter)
+    - [Properties](#properties-1)
+  - [wait](#wait)
+    - [Parameters](#parameters)
+  - [stateActionHandler](#stateactionhandler)
+    - [Parameters](#parameters-1)
+  - [rateLimitHandler](#ratelimithandler)
+    - [Parameters](#parameters-2)
+  - [retryTimes](#retrytimes)
+  - [retryHandler](#retryhandler)
+    - [Parameters](#parameters-3)
+  - [defaultHandler](#defaulthandler)
+    - [Parameters](#parameters-4)
+  - [errorHandler](#errorhandler)
+    - [Parameters](#parameters-5)
+  - [cacheHandler](#cachehandler)
+    - [Parameters](#parameters-6)
+  - [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
+  - [DEFAULT\_MAX\_RETRIES](#default_max_retries)
+- [install](#install)
+- [license](#license)
 
 ## HandlerResult
 
