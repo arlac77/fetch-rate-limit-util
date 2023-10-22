@@ -35,32 +35,29 @@ const response = await stateActionHandler(someURL, options);
 
 ### Table of Contents
 
-- [fetch-rate-limit-util](#fetch-rate-limit-util)
-- [API](#api)
-    - [Table of Contents](#table-of-contents)
-  - [HandlerResult](#handlerresult)
-    - [Properties](#properties)
-  - [RequestReporter](#requestreporter)
-    - [Properties](#properties-1)
-  - [wait](#wait)
-    - [Parameters](#parameters)
-  - [stateActionHandler](#stateactionhandler)
-    - [Parameters](#parameters-1)
-  - [rateLimitHandler](#ratelimithandler)
-    - [Parameters](#parameters-2)
-  - [retryTimes](#retrytimes)
-  - [retryHandler](#retryhandler)
-    - [Parameters](#parameters-3)
-  - [defaultHandler](#defaulthandler)
-    - [Parameters](#parameters-4)
-  - [errorHandler](#errorhandler)
-    - [Parameters](#parameters-5)
-  - [cacheHandler](#cachehandler)
-    - [Parameters](#parameters-6)
-  - [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
-  - [DEFAULT\_MAX\_RETRIES](#default_max_retries)
-- [install](#install)
-- [license](#license)
+*   [HandlerResult](#handlerresult)
+    *   [Properties](#properties)
+*   [RequestReporter](#requestreporter)
+    *   [Properties](#properties-1)
+*   [wait](#wait)
+    *   [Parameters](#parameters)
+*   [stateActionHandler](#stateactionhandler)
+    *   [Parameters](#parameters-1)
+*   [calculateRepeatAfter](#calculaterepeatafter)
+    *   [Parameters](#parameters-2)
+*   [rateLimitHandler](#ratelimithandler)
+    *   [Parameters](#parameters-3)
+*   [retryTimes](#retrytimes)
+*   [retryHandler](#retryhandler)
+    *   [Parameters](#parameters-4)
+*   [defaultHandler](#defaulthandler)
+    *   [Parameters](#parameters-5)
+*   [errorHandler](#errorhandler)
+    *   [Parameters](#parameters-6)
+*   [cacheHandler](#cachehandler)
+    *   [Parameters](#parameters-7)
+*   [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
+*   [DEFAULT\_MAX\_RETRIES](#default_max_retries)
 
 ## HandlerResult
 
@@ -115,6 +112,14 @@ Executes fetch operation and handles response.
     *   `options.stateActions` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)>** from fetch
+
+## calculateRepeatAfter
+
+### Parameters
+
+*   `response` **any**&#x20;
+
+Returns **([number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) | [undefined](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined))** msecs to wait
 
 ## rateLimitHandler
 
