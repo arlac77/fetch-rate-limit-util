@@ -2,7 +2,8 @@
   "name": "fetch-rate-limit-util",
   "version": "0.0.0-semantic-release",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "exports": {
     ".": "./src/rate-limit-util.mjs"
