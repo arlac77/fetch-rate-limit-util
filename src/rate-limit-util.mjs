@@ -300,7 +300,8 @@ export const defaultStateActions = {
   599: retryHandler,
 
   ERR_STREAM_PREMATURE_CLOSE: retryHandler,
-  UND_ERR_CONNECT_TIMEOUT: retryHandler
+  UND_ERR_CONNECT_TIMEOUT: retryHandler,
+  UND_ERR_SOCKET: retryHandler
 };
 
 const defaultOptions = {
