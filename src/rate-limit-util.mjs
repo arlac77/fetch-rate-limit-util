@@ -299,6 +299,9 @@ export const defaultStateActions = {
   504: retryHandler, // Gateway Timeout
   599: retryHandler,
 
+// 408, 413, 420, 425, 429, 430,
+// 500, 502, 503, 504, 507, 509, 529, 598
+
   ERR_STREAM_PREMATURE_CLOSE: retryHandler,
   UND_ERR_CONNECT_TIMEOUT: retryHandler,
   UND_ERR_SOCKET: retryHandler,
