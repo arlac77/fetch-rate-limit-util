@@ -288,19 +288,24 @@ export const defaultStateActions = {
   408: retryHandler, // Request timeout
   409: retryHandler, // Conflict
   412: errorHandler, // precondition failed
+  413: errorHandler, // Content Too Large
+  420: retryHandler, // Method Failure or Enhance your calm
   // 422: defaultHandler, // UNPROCESSABLE ENTITY
   423: retryHandler,
-  429: rateLimitHandler,
+  425: retryHandler, // Too Early
+  429: rateLimitHandler, // The service is overloaded
+  430: retryHandler,
   444: retryHandler,
   // 451: defaultHandler,
   500: retryHandler, // Internal Server Error
   502: retryHandler, // Bad Gateway
   503: retryHandler, // Service Unavailable
   504: retryHandler, // Gateway Timeout
+  507: errorHandler, // Insufficient Storage
+  509: retryHandler,
+  529: retryHandler,
+  598: retryHandler, // Network Read Timeout Error
   599: retryHandler,
-
-// 408, 413, 420, 425, 429, 430,
-// 500, 502, 503, 504, 507, 509, 529, 598
 
   ERR_STREAM_PREMATURE_CLOSE: retryHandler,
   UND_ERR_CONNECT_TIMEOUT: retryHandler,
