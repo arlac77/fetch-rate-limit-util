@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} HandlerResult
  * @property {URL} [url] what to fetch next
- * @property {repeatAfter} [number] of milliseconds to wait befor next try
+ * @property {number} [repeatAfter] of milliseconds to wait befor next try
  * @property {string} message to report
  * @property {boolean} done op is finished return
  * @property {Response} response
@@ -18,7 +18,7 @@
  */
 
 /**
- * @param {string} url
+ * @param {URL|string} url
  * @param {Object} options
  * @param {Object} result
  */
@@ -143,7 +143,7 @@ function calculateRepeatAfter(response) {
     };
     for (const [key, f] of Object.entries(headers)) {
       const value = response.headers.get(key);
-      if (value != null && value !== undefined) {
+      if (value !== null && value !== undefined) {
         let repeatAfter = f(value);
         return repeatAfter < DEFAULT_MIN_WAIT_MSECS
           ? DEFAULT_MIN_WAIT_MSECS
@@ -184,7 +184,7 @@ export function rateLimitHandler(response, options, nthTry) {
  * increasing delay for each retry.
  * Values in msecs.
  */
-const retryTimes = [200, 10000, 30000, 60000];
+const retryTimes = [300, 15000, 45000, 80000];
 
 /**
  * Try several times with a increasing delay.
@@ -248,7 +248,7 @@ export function errorHandler(response, options, nthTry) {
  * @param {Response} response from fetch
  * @param {Object} options
  * @param {number} nthTry
- * @returns {HandlerResult}
+ * @returns {Promise<HandlerResult>}
  */
 export async function cacheHandler(response, options, nthTry) {
   response = await options.cache.loadResponse(response);
