@@ -1,8 +1,8 @@
 /**
  * @typedef {Object} HandlerResult
- * @property {URL} [url] what to fetch next
+ * @property {string} [url] what to fetch next
  * @property {number} [repeatAfter] of milliseconds to wait befor next try
- * @property {string} message to report
+ * @property {string} [message] to report
  * @property {boolean} done op is finished return
  * @property {Response} response
  * @property {boolean} postprocess exec postprocess
@@ -199,6 +199,7 @@ export function retryHandler(response, options, nthTry) {
   if (repeatAfter) {
     return {
       done: false,
+      response,
       postprocess: false,
       repeatAfter,
       message: `Waiting for ${repeatAfter / 1000}s`
@@ -208,6 +209,13 @@ export function retryHandler(response, options, nthTry) {
   return { done: false, response, postprocess: false };
 }
 
+/**
+ * Redirect to given header location.
+ * @param {Response} response from fetch
+ * @param {Object} options
+ * @param {number} nthTry
+ * @returns {HandlerResult}
+ */
 export function redirectHandler(response, options, nthTry) {
   if (nthTry <= 3) {
     return {
