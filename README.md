@@ -50,12 +50,14 @@ const response = await stateActionHandler(someURL, options);
 *   [retryTimes](#retrytimes)
 *   [retryHandler](#retryhandler)
     *   [Parameters](#parameters-4)
-*   [defaultHandler](#defaulthandler)
+*   [redirectHandler](#redirecthandler)
     *   [Parameters](#parameters-5)
-*   [errorHandler](#errorhandler)
+*   [defaultHandler](#defaulthandler)
     *   [Parameters](#parameters-6)
-*   [cacheHandler](#cachehandler)
+*   [errorHandler](#errorhandler)
     *   [Parameters](#parameters-7)
+*   [cacheHandler](#cachehandler)
+    *   [Parameters](#parameters-8)
 *   [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
 *   [DEFAULT\_MAX\_RETRIES](#default_max_retries)
 
@@ -65,9 +67,9 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 ### Properties
 
-*   `url` **[URL](https://developer.mozilla.org/docs/Web/API/URL/URL)?** what to fetch next
+*   `url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** what to fetch next
 *   `repeatAfter` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** of milliseconds to wait befor next try
-*   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to report
+*   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** to report
 *   `done` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** op is finished return
 *   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)**&#x20;
 *   `postprocess` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** exec postprocess
@@ -146,6 +148,18 @@ Values in msecs.
 ## retryHandler
 
 Try several times with a increasing delay.
+
+### Parameters
+
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)** from fetch
+*   `options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**&#x20;
+*   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**&#x20;
+
+Returns **[HandlerResult](#handlerresult)**&#x20;
+
+## redirectHandler
+
+Redirect to given header location.
 
 ### Parameters
 
