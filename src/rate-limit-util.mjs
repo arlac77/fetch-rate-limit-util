@@ -11,9 +11,9 @@
 /**
  * Function to provide progress report.
  * @typedef {Function} RequestReporter
- * @property {String} url to be requested
- * @property {String} method http method name
- * @property {String|Error} status result of the last request
+ * @property {string} url to be requested
+ * @property {string} method http method name
+ * @property {string|Error} status result of the last request
  * @property {number} nthTry how often have we retried
  */
 
@@ -222,6 +222,7 @@ export function redirectHandler(response, options, nthTry) {
       done: false,
       postprocess: false,
       repeatAfter: 0,
+      response,
       url: response.headers.get("location")
     };
   }
@@ -322,6 +323,9 @@ export const defaultStateActions = {
   EAI_AGAIN: retryHandler,
 };
 
+/**
+ * Default options
+ */
 const defaultOptions = {
   stateActions: defaultStateActions,
   headers: {},
