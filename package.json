@@ -5,9 +5,11 @@
     "access": "public",
     "provenance": true
   },
+  "types": "./types/rate-limit-util.d.mts",
   "exports": {
     ".": {
-      "default": "./src/rate-limit-util.mjs"
+      "default": "./src/rate-limit-util.mjs",
+      "types": "./types/rate-limit-util.d.mts"
     }
   },
   "description": "handle fetch errors and rate limits",
