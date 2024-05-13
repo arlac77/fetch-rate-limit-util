@@ -60,6 +60,7 @@ const response = await stateActionHandler(someURL, options);
     *   [Parameters](#parameters-8)
 *   [DEFAULT\_MIN\_WAIT\_MSECS](#default_min_wait_msecs)
 *   [DEFAULT\_MAX\_RETRIES](#default_max_retries)
+*   [defaultOptions](#defaultoptions)
 
 ## HandlerResult
 
@@ -82,9 +83,9 @@ Type: [Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Sta
 
 ### Properties
 
-*   `url` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to be requested
-*   `method` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** http method name
-*   `status` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error))** result of the last request
+*   `url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** to be requested
+*   `method` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** http method name
+*   `status` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error))** result of the last request
 *   `nthTry` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** how often have we retried
 
 ## wait
@@ -216,6 +217,10 @@ Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 Max # of retries.
 
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
+
+## defaultOptions
+
+Default options
 
 # install
 
