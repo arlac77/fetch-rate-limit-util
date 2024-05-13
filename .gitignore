@@ -4,6 +4,7 @@ build
 /node_modules/**
 *.log
 *.dump
+types
 *.node
 .test
 .tmp
