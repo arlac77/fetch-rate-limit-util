@@ -1,0 +1,6 @@
+{
+  "key": "value from other",
+  "sub": {
+    "key": "value in other sub ${c1}"
+  }
+}
