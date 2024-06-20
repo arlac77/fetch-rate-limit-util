@@ -1,49 +1,197 @@
 {
-  "name": "fetch-rate-limit-util",
+  "name": "svelte-websocket-store",
   "version": "0.0.0-semantic-release",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
+  "type": "module",
+  "main": "./src/B.js",
   "types": "./types/rate-limit-util.d.mts",
   "exports": {
     ".": {
+      "0": ".",
+      "1": "/",
+      "2": "s",
+      "3": "r",
+      "4": "c",
+      "5": "/",
+      "6": "i",
+      "7": "n",
+      "8": "d",
+      "9": "e",
+      "10": "x",
+      "11": ".",
+      "12": "m",
+      "13": "j",
+      "14": "s",
+      "15": "p",
+      "16": "r",
+      "17": "o",
+      "18": "v",
+      "19": "i",
+      "20": "d",
+      "21": "e",
+      "22": "r",
+      "23": ".",
+      "24": "m",
+      "25": "j",
+      "26": "s",
+      "27": "j",
+      "28": "s",
       "default": "./src/rate-limit-util.mjs",
+      "svelte": "./src/index.svelte",
       "types": "./types/rate-limit-util.d.mts"
-    }
+    },
+    "./css": "./src/entitlement.css",
+    "./package.json": "./package.json"
   },
-  "description": "handle fetch errors and rate limits",
+  "module": "src/B.js",
+  "description": "svelte store with a websocket backend",
   "keywords": [
+    "JWT",
+    "OCI",
+    "RFC-8288",
+    "aggregate",
+    "asynciterator",
+    "auth-provider",
+    "bitbucket",
+    "cache",
+    "cli",
+    "component",
+    "config",
+    "container",
+    "content",
+    "directory",
     "etag",
+    "evaluate",
+    "expression",
+    "expression-evaluation",
     "fetch",
-    "rate-limit"
+    "file",
+    "filesystem",
+    "git",
+    "http",
+    "iterators",
+    "leveldb",
+    "link",
+    "log",
+    "paging",
+    "parser",
+    "property",
+    "rate-limit",
+    "rel",
+    "repository-provider",
+    "router",
+    "sequence",
+    "session",
+    "spa",
+    "stat",
+    "store",
+    "svelte",
+    "token",
+    "vite",
+    "web",
+    "websocket",
+    "zip"
   ],
+  "author": "Markus Felten <markus.felten@gmx.de>",
   "contributors": [
+    "Markus Felten <markus.felten@gmx.de>",
     {
       "name": "Markus Felten",
       "email": "markus.felten@gmx.de"
     }
   ],
   "license": "BSD-2-Clause",
+  "bin": {
+    "bocf": "src/bocf-cli.mjs",
+    "config-expander": "src/config-expander-cli.mjs"
+  },
   "scripts": {
-    "prepare": "npm run prepare:typescript",
+    "prepare": "npm run prepare:typescript && npm run prepare:vite",
     "prepare:typescript": "tsc --allowJs --declaration --emitDeclarationOnly --declarationDir types --resolveJsonModule -t esnext -m esnext --module nodenext --moduleResolution nodenext --rootDir src ./src**/*.mjs",
-    "test": "npm run test:browser-ava && npm run test:ava",
+    "prepare:vite": "vite build",
+    "start": "vite",
+    "test": "npm run test:ava && npm run test:cafe && npm run test:browser-ava && ava",
     "test:ava": "ava --timeout 4m tests/*-ava.mjs tests/*-ava-node.mjs",
     "test:browser-ava": "browser-ava --headless --no-keep-open tests/*-ava.mjs tests/*-ava-browser.mjs",
+    "test:cafe": "testcafe $BROWSER:headless tests/cafe/*-cafe.mjs --esm -s build/test --page-request-timeout 5000 --app-init-delay 8000 --app vite",
+    "posttest": "markdown-doctest && npm run prepare",
     "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 4m tests/*-ava.mjs tests/*-ava-node.mjs && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
-    "docs": "documentation readme --section=API ./src/**/*.mjs",
-    "lint": "npm run lint:docs && npm run lint:typescript",
+    "docs": "documentation readme src/B.js --section=API && documentation readme --section=API ./src/**/*.mjs",
+    "lint": "npm run lint:docs && npm run lint:typescript && documentation lint src/B.js",
     "lint:docs": "documentation lint ./src/**/*.mjs",
-    "lint:typescript": "tsc --allowJs --checkJs --noEmit --resolveJsonModule -t esnext -m esnext --module nodenext --moduleResolution nodenext ./src**/*.mjs"
+    "lint:typescript": "tsc --allowJs --checkJs --noEmit --resolveJsonModule -t esnext -m esnext --module nodenext --moduleResolution nodenext ./src**/*.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "aggregate-async-iterator": "^1.2.1",
+    "repository-provider": "^35.2.21",
+    "content-entry": "^11.0.1",
+    "fetch-rate-limit-util": "^4.3.1",
+    "matching-iterator": "^2.1.3",
+    "one-time-execution-method": "^3.1.1",
+    "commander": "^12.1.0",
+    "config-expander": "^14.0.4",
+    "pump": "^3.0.0",
+    "tar-stream": "^3.0.0",
+    "expression-expander": "^7.2.5",
+    "pratt-parser": "^10.0.2",
+    "enquirer": "^2.3.5",
+    "browser-stream-util": "^1.2.1",
+    "iterable-string-interceptor": "^3.0.0",
+    "loglevel-mixin": "^7.2.2",
+    "model-attributes": "^4.2.2",
+    "statetransition-mixin": "^8.1.0",
+    "levelup": "^5.1.1",
+    "svelte-dnd-action": "^0.9.49",
+    "multi-path-matcher": "^4.1.1",
+    "vite-plugin-compression2": "^1.1.1"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/github": "^10.0.6",
+    "@semantic-release/release-notes-generator": "^14.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@types/node": "^20.14.6",
     "ava": "^6.1.3",
+    "bitbucket-repository-provider": "^6.0.24",
     "browser-ava": "^2.2.16",
     "c8": "^10.1.2",
     "documentation": "^14.0.3",
+    "esm": "^3.2.25",
+    "execa": "^9.2.0",
+    "gitea-repository-provider": "^4.2.3",
+    "github-repository-provider": "^9.0.17",
+    "jsonwebtoken": "^9.0.2",
+    "leveldown": "^6.1.1",
+    "local-repository-provider": "^9.0.1",
+    "markdown-doctest": "^1.1.0",
+    "mf-styling": "^3.1.6",
+    "mock-repository-provider": "^8.2.7",
+    "npm-pkgbuild": "^15.3.21",
+    "repository-provider-test-support": "^3.1.5",
     "semantic-release": "^24.0.0",
-    "typescript": "^5.5.2"
+    "split": "^1.0.1",
+    "svelte": "^5.0.0-next.160",
+    "svelte-common": "^6.10.20",
+    "testcafe": "^3.6.1",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vite-plugin-compression2": "^1.1.1",
+    "ws": "^8.17.1"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0-next.0"
+  },
+  "optionalDependencies": {
+    "mf-hosting-cloudflare": "^1.0.6",
+    "mf-hosting-frontend": "^3.2.1"
+  },
+  "engines": {
+    "node": ">=20.14.0"
   },
   "repository": {
     "type": "git",
@@ -53,6 +201,77 @@
     "url": "https://github.com/arlac77/fetch-rate-limit-util/issues"
   },
   "homepage": "https://github.com/arlac77/fetch-rate-limit-util#readme",
+  "pkgbuild": {
+    "content": {
+      "${install.dir}": "build/"
+    },
+    "example": true,
+    "frontend": true,
+    "api": "api/login"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/exec",
+        {
+          "publishCmd": "npx npm-pkgbuild --publish dist"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "dist/*.deb",
+              "label": "any Debian Package"
+            },
+            {
+              "path": "dist/*any.pkg.*",
+              "label": "any Arch Linux Package"
+            },
+            {
+              "path": "dist/*x86_64.pkg.*",
+              "label": "x86_64 Arch Linux Package"
+            },
+            {
+              "path": "dist/*aarch64.pkg.*",
+              "label": "arm64 Arch Linux Package"
+            },
+            {
+              "path": "dist/*noarch.rpm",
+              "label": "noarch RPM"
+            },
+            {
+              "path": "dist/*x86_64.rpm",
+              "label": "x86_64 RPM"
+            },
+            {
+              "path": "dist/*aarch64.rpm",
+              "label": "arm64 RPM"
+            }
+          ]
+        }
+      ]
+    ]
+  },
+  "ava": {
+    "files": [
+      "tests/*-test.js",
+      "tests/*-test.mjs"
+    ],
+    "require": [
+      "esm"
+    ],
+    "babel": false,
+    "compileEnhancements": false,
+    "extensions": [
+      "js",
+      "mjs"
+    ]
+  },
   "template": {
     "inheritFrom": [
       "arlac77/template-arlac77-github",
