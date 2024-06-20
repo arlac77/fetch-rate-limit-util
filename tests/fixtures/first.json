@@ -1,0 +1,6 @@
+{
+  "constants": {
+    "c1": "v1"
+  },
+  "first_key": "${include(nameOfTheOther)}"
+}
