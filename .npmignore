@@ -5,3 +5,14 @@ doc
 *.tmp
 .vscode
 .github
+.node-version
+jsconfig.json
+pkg
+vite.config.mts
+dist
+netlify.toml
+rollup.config.*
+.test
+.tmp
+.travis.yml
+.markdown-doctest-setup.js
