@@ -144,7 +144,7 @@ function calculateRepeatAfter(response) {
     for (const [key, f] of Object.entries(headers)) {
       const value = response.headers.get(key);
       if (value !== null && value !== undefined) {
-        let repeatAfter = f(value);
+        const repeatAfter = f(value);
         return repeatAfter < DEFAULT_MIN_WAIT_MSECS
           ? DEFAULT_MIN_WAIT_MSECS
           : repeatAfter;
@@ -186,6 +186,8 @@ export function rateLimitHandler(response, options, nthTry) {
  */
 const retryTimes = [300, 15000, 45000, 80000];
 
+const slowRetryTimes = [5000, 60000, 600000];
+
 /**
  * Try several times with a increasing delay.
  * @param {Response} response from fetch
@@ -195,6 +197,22 @@ const retryTimes = [300, 15000, 45000, 80000];
  */
 export function retryHandler(response, options, nthTry) {
   const repeatAfter = calculateRepeatAfter(response) || retryTimes[nthTry];
+
+  if (repeatAfter) {
+    return {
+      done: false,
+      response,
+      postprocess: false,
+      repeatAfter,
+      message: `Waiting for ${repeatAfter / 1000}s`
+    };
+  }
+
+  return { done: false, response, postprocess: false };
+}
+
+export function slowRetryHandler(response, options, nthTry) {
+  const repeatAfter = calculateRepeatAfter(response) || slowRetryTimes[nthTry];
 
   if (repeatAfter) {
     return {
@@ -318,8 +336,8 @@ export const defaultStateActions = {
 
   ERR_STREAM_PREMATURE_CLOSE: retryHandler,
   UND_ERR_CONNECT_TIMEOUT: retryHandler,
-  UND_ERR_SOCKET: retryHandler,
-  ECONNRESET: retryHandler,
+  UND_ERR_SOCKET: slowRetryHandler, // other side closed ?
+  ECONNRESET: slowRetryHandler,
   EAI_AGAIN: retryHandler,
 };
 
