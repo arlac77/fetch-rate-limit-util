@@ -8,8 +8,8 @@
   "types": "./types/rate-limit-util.d.mts",
   "exports": {
     ".": {
-      "default": "./src/rate-limit-util.mjs",
-      "types": "./types/rate-limit-util.d.mts"
+      "types": "./types/rate-limit-util.d.mts",
+      "default": "./src/rate-limit-util.mjs"
     }
   },
   "description": "handle fetch errors and rate limits",
