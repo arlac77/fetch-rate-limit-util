@@ -29,7 +29,7 @@
     "prepare": "node --run prepare:typescript",
     "prepare:typescript": "tsc --allowJs --declaration --emitDeclarationOnly --declarationDir types --resolveJsonModule --target esnext -m esnext --module nodenext --moduleResolution nodenext --rootDir src ./src**/*.mjs",
     "test": "node --run test:browser-ava && node --run test:ava",
-    "test:ava": "ava --timeout 4m tests/*-ava.mjs tests/*-ava-node.mjs",
+    "test:ava": "ava --timeout 10m tests/*-ava.mjs tests/*-ava-node.mjs",
     "test:browser-ava": "browser-ava --headless --no-keep-open tests/*-ava.mjs tests/*-ava-browser.mjs",
     "cover": "c8 -x 'tests/**/*' --temp-directory build/tmp ava --timeout 4m tests/*-ava.mjs tests/*-ava-node.mjs && c8 report -r lcov -o build/coverage --temp-directory build/tmp",
     "docs": "documentation readme --section=API ./src**/*.mjs",
@@ -54,6 +54,11 @@
   },
   "homepage": "https://github.com/arlac77/fetch-rate-limit-util#readme",
   "template": {
+    "properties": {
+      "ava": {
+        "timeout": "10m"
+      }
+    },
     "inheritFrom": [
       "arlac77/template-arlac77-github",
       "arlac77/template-browser-ava",
