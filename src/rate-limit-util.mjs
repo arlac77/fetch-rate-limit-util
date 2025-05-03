@@ -184,9 +184,9 @@ export function rateLimitHandler(response, options, nthTry) {
  * increasing delay for each retry.
  * Values in msecs.
  */
-const retryTimes = [300, 15000, 45000, 80000];
+const retryTimes = [300, 15000, 90000, 200000];
 
-const slowRetryTimes = [5000, 60000, 600000];
+const slowRetryTimes = [5000, 100000, 900000];
 
 /**
  * Try several times with a increasing delay.
