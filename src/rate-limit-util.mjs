@@ -338,6 +338,7 @@ export const defaultStateActions = {
   UND_ERR_CONNECT_TIMEOUT: retryHandler,
   UND_ERR_SOCKET: slowRetryHandler, // other side closed ?
   ECONNRESET: slowRetryHandler,
+  EHOSTUNREACH: retryHandler,
   EAI_AGAIN: retryHandler,
 };
 
