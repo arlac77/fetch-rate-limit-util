@@ -69,11 +69,11 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 
 ### Properties
 
+*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)**&#x20;
+*   `done` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** op is finished return
 *   `url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** what to fetch next
 *   `repeatAfter` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** of milliseconds to wait befor next try
 *   `message` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** to report
-*   `done` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** op is finished return
-*   `response` **[Response](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)**&#x20;
 *   `postprocess` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** exec postprocess
 
 ## RequestReporter
