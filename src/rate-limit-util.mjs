@@ -340,8 +340,7 @@ export const defaultStateActions = {
   ECONNRESET: slowRetryHandler,
   EHOSTUNREACH: retryHandler,
   EAI_AGAIN: retryHandler,
-  ENETUNREACH: slowRetryHandler,
-  EADDRNOTAVAIL: slowRetryHandler
+  ENETUNREACH: slowRetryHandler
 };
 
 /**
