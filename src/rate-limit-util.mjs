@@ -334,6 +334,7 @@ export const defaultStateActions = {
   598: retryHandler, // Network Read Timeout Error
   599: retryHandler,
 
+  ENOTFOUND: errorHandler, // -3008 osx
   ERR_STREAM_PREMATURE_CLOSE: retryHandler,
   UND_ERR_CONNECT_TIMEOUT: slowRetryHandler,
   UND_ERR_SOCKET: slowRetryHandler, // other side closed ?
